@@ -10,32 +10,38 @@ namespace homeworkASPNET.Controllers
     [ApiController]
     public class CrudController : ControllerBase
     {
-        private readonly List<WeatherInfo> _info = new List<WeatherInfo>();
+        private readonly ValuesHolder _holder;
 
-        public CrudController(WeatherInfo info) => this._info = info;
-
+        public CrudController(ValuesHolder holder)
+        {
+            _holder = holder;
+        }
 
         [HttpPost("create")]
-        public IActionResult Create([FromQuery] int Temperature)
+        public IActionResult Create([FromQuery] string input)
         {
-            _info.Add(Temperature);
+            holder.Values.Add(input);
             return Ok();
         }
+
         [HttpGet("read")]
         public IActionResult Read()
         {
-            return Ok(_info);
+            return Ok(holder.Values);
         }
+
         [HttpPut("update")]
-        public IActionResult Update([FromQuery] int Temperature, DateTime Date, [FromQuery] int newTemperature)
+        public IActionResult Update([FromQuery] string stringsToUpdate, [FromQuery] string newValue)
         {
-            for(int i=0; i<_info.Count; i++)
+            for (int i = 0; i < holder.Values.Count; i++)
             {
-                if (_info[i] == Temperature)
-                    _info[i] = newTemperature;
+                if (holder.Values[i] == stringsToUpdate)
+                    holder.Values[i] = newValue;
             }
+
             return Ok();
         }
+
         [HttpDelete("delete")]
         public IActionResult Delete([FromQuery] string stringsToDelete)
         {
@@ -44,3 +50,4 @@ namespace homeworkASPNET.Controllers
         }
     }
 }
+
