@@ -3,43 +3,47 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using homeworkASPNET.Models;
 
-namespace homeworkASPNET.Controllers
+namespace MetricsManager.Controllers
 {
     [Route("api/crud")]
     [ApiController]
     public class CrudController : ControllerBase
     {
-        private readonly List<WeatherInfo> _info = new List<WeatherInfo>();
+        private readonly ValuesHolder _holder;
 
-        public CrudController(WeatherInfo info) => this._info = info;
+        public CrudController(ValuesHolder holder)
+        {
+            this._holder = holder;
+        }
 
 
         [HttpPost("create")]
-        public IActionResult Create([FromQuery] int Temperature)
+        public IActionResult Create([FromQuery] int temperature, DateTime date)
         {
-            _info.Add(Temperature);
+            holder.Add(temperature, date);
             return Ok();
         }
         [HttpGet("read")]
         public IActionResult Read()
         {
-            return Ok(_info);
+            return Ok(holder);
         }
         [HttpPut("update")]
-        public IActionResult Update([FromQuery] int Temperature, DateTime Date, [FromQuery] int newTemperature)
+        public IActionResult Update([FromQuery] DateTime date, [FromQuery] DateTime newDate)
         {
-            for(int i=0; i<_info.Count; i++)
+            for (int i = 0; i < holder.Count; i++)
             {
-                if (_info[i] == Temperature)
-                    _info[i] = newTemperature;
+                if (holder[i] == date)
+                    holder[i] = newDate;
             }
             return Ok();
         }
         [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] string stringsToDelete)
+        public IActionResult Delete([FromQuery] DateTime date)
         {
-            holder.Values = holder.Values.Where(w => w != stringsToDelete).ToList();
+            holder.Values = holder.Values.Where(w => w != date).ToList();
             return Ok();
         }
     }
