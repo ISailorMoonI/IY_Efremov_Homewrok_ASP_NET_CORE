@@ -7,16 +7,12 @@ using Microsoft.AspNetCore.SignalR;
 namespace homeworkASPNET.Models
 {
     public class ValuesHolder
-    {
-        public List<ValuesHolder> Holder { get; set; } = new List<ValuesHolder>();
-
-        public void Add(ValuesHolder values)
         {
-            Holder.Add(values);
+            public List<DataAndTemperature> Values { get; set; }
+            public ValuesHolder()
+            {
+                Values = new List<DataAndTemperature>();
+            }
         }
-        public int temperature { get; set; }
-        public DateTime Date { get; set; }
-
-    }
 }
     

@@ -11,45 +11,96 @@ namespace homeworkASPNET.Controllers
     [ApiController]
     public class CrudController : ControllerBase
     {
-        private readonly ValuesHolder _holder;
+        private readonly ValuesHolder holder;
 
         public CrudController(ValuesHolder holder)
         {
-            this._holder = holder;
+            this.holder = holder;
         }
 
 
         [HttpPost("create")]
-        public IActionResult Create([FromQuery] int temperature, DateTime date)
+        public IActionResult Create([FromQuery] DateTime? date, [FromQuery] int? temperature)
         {
-            holder.Add(temperature, date);
+            DataAndTemperature dt = new DataAndTemperature();
+
+            if (date != null)
+            {
+                dt.Date = (DateTime)date;
+            }
+            else
+            {
+                dt.Date = DateTime.Now;
+            }
+
+            if (temperature != null)
+            {
+                dt.Temperature = (int)temperature;
+                holder.Values.Add(dt); 
+            }
+
             return Ok();
         }
         [HttpGet("read")]
+
         public IActionResult Read()
         {
             return Ok(holder);
         }
+
         [HttpPut("update")]
-        public IActionResult Update([FromQuery] DateTime date, [FromQuery] DateTime newDate)
+        public IActionResult Update([FromQuery] DateTime? date, [FromQuery] int? newValue)
         {
-            for (int i = 0; i < holder.Count; i++)
+            if (date != null && newValue != null)
             {
-                if (holder[i] == date)
-                    holder[i] = newDate;
+                bool founded = false;
+
+                foreach (DataAndTemperature data in holder.Values)
+                {
+                    if (data.Date == date)
+                    {
+                        data.Temperature = (int)newValue;
+                        founded = true;
+                    }
+                }
+
+                if (!founded)
+                    return BadRequest();
+
+                return Ok();
             }
-            return Ok();
+            else
+            {
+                return BadRequest();
+            }
         }
         [HttpDelete("delete")]
-        public IActionResult Delete([FromQuery] DateTime from, DateTime to)
+        public IActionResult Delete([FromQuery] DateTime? dateStart, [FromQuery] DateTime? dateEnd)
         {
-            for (int i = holder.Count - 1; i>=0; i--)
+            if (dateEnd == null)
             {
-                if (holder[i].Date >= from && holder[i].Date <= to)
+                dateEnd = DateTime.MaxValue;
+            }
+
+            if (dateStart == null)
+            {
+                dateStart = DateTime.MinValue;
+            }
+
+            bool founded = false;
+            // !!! backward direction only!
+            for (int i = holder.Values.Count - 1; i >= 0; i--)
+            {
+                if (holder.Values[i].Date >= dateStart && holder.Values[i].Date <= dateEnd)
                 {
-                    holder.RemoveAt(i);
+                    holder.Values.RemoveAt(i);
+                    founded = true;
                 }
             }
+
+            if (!founded)
+                return BadRequest();
+
             return Ok();
         }
     }
