@@ -8,10 +8,15 @@ namespace homeworkASPNET.Models
 {
     public class ValuesHolder
     {
-        public int temperature { get; set; }
-        public DateTime date { get; set; }
+        public List<ValuesHolder> Holder { get; set; } = new List<ValuesHolder>();
 
-        private List<ValuesHolder> _holder = new List<ValuesHolder>();
+        public void Add(ValuesHolder values)
+        {
+            Holder.Add(values);
+        }
+        public int temperature { get; set; }
+        public DateTime Date { get; set; }
+
     }
+}
     
-    }
