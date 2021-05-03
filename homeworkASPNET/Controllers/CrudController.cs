@@ -43,13 +43,14 @@ namespace MetricsManager.Controllers
         [HttpDelete("delete")]
         public IActionResult Delete([FromQuery] DateTime from, DateTime to)
         {
-            for (int i = 0; i < ValuesHolder.Count; i++)
+            for (int i = ValuesHolder.Count - 1; i>=0; i--)
             {
                 if (ValuesHolder[i].Date >= from && ValuesHolder[i].Date <= to)
                 {
                     ValuesHolder.RemoveAt(i);
                 }
             }
+            return Ok();
         }
     }
 }
