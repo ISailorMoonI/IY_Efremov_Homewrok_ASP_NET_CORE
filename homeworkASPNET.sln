@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "homeworkASPNET", "homeworkASPNET\homeworkASPNET.csproj", "{E6CB0A23-DA90-438D-B557-F7F7EFC02420}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManager", "ASPNET_Project\MetricsManager.csproj", "{616EBACA-15EA-4438-8639-4EC120247303}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsManagerTests", "MetricsManagerTests\MetricsManagerTests.csproj", "{F29CABFD-C1CC-4613-8644-9E934539C55F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgent", "MetricsAgent\MetricsAgent.csproj", "{286F26CF-5921-4669-A6ED-ADB6DE869C75}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetricsAgentTests", "MetricsAgentTests\MetricsAgentTests.csproj", "{76BE13D4-7E86-4553-A3E7-762B7D1F044B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetricsAgentTests", "MetricsAgentTests\MetricsAgentTests.csproj", "{76BE13D4-7E86-4553-A3E7-762B7D1F044B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E6CB0A23-DA90-438D-B557-F7F7EFC02420}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E6CB0A23-DA90-438D-B557-F7F7EFC02420}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E6CB0A23-DA90-438D-B557-F7F7EFC02420}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E6CB0A23-DA90-438D-B557-F7F7EFC02420}.Release|Any CPU.Build.0 = Release|Any CPU
 		{616EBACA-15EA-4438-8639-4EC120247303}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{616EBACA-15EA-4438-8639-4EC120247303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{616EBACA-15EA-4438-8639-4EC120247303}.Release|Any CPU.ActiveCfg = Release|Any CPU
