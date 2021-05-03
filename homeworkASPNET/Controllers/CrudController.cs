@@ -43,11 +43,11 @@ namespace homeworkASPNET.Controllers
         [HttpDelete("delete")]
         public IActionResult Delete([FromQuery] DateTime from, DateTime to)
         {
-            for (int i = ValuesHolder.Count - 1; i>=0; i--)
+            for (int i = holder.Count - 1; i>=0; i--)
             {
-                if (ValuesHolder[i].Date >= from && ValuesHolder[i].Date <= to)
+                if (holder[i].Date >= from && holder[i].Date <= to)
                 {
-                    ValuesHolder.RemoveAt(i);
+                    holder.RemoveAt(i);
                 }
             }
             return Ok();
