@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using homeworkASPNET.Models;
 
-namespace MetricsManager.Controllers
+namespace homeworkASPNET.Controllers
 {
     [Route("api/crud")]
     [ApiController]
