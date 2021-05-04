@@ -11,11 +11,11 @@ namespace homeworkASPNET.Controllers
     [ApiController]
     public class CrudController : ControllerBase
     {
-        private readonly ValuesHolder holder;
+        private readonly ValuesHolder _holder;
 
         public CrudController(ValuesHolder holder)
         {
-            this.holder = holder;
+            this._holder = holder;
         }
 
 
@@ -26,7 +26,7 @@ namespace homeworkASPNET.Controllers
 
             if (date != null)
             {
-                dt.Date = (DateTime)date;
+                dt.Date = (DateTime) date;
             }
             else
             {
@@ -35,17 +35,18 @@ namespace homeworkASPNET.Controllers
 
             if (temperature != null)
             {
-                dt.Temperature = (int)temperature;
-                holder.Values.Add(dt); 
+                dt.Temperature = (int) temperature;
+                _holder.Values.Add(dt);
             }
 
             return Ok();
         }
+
         [HttpGet("read")]
 
         public IActionResult Read()
         {
-            return Ok(holder);
+            return Ok(_holder);
         }
 
         [HttpPut("update")]
@@ -55,11 +56,11 @@ namespace homeworkASPNET.Controllers
             {
                 bool founded = false;
 
-                foreach (DataAndTemperature data in holder.Values)
+                foreach (DataAndTemperature data in _holder.Values)
                 {
                     if (data.Date == date)
                     {
-                        data.Temperature = (int)newValue;
+                        data.Temperature = (int) newValue;
                         founded = true;
                     }
                 }
@@ -74,6 +75,7 @@ namespace homeworkASPNET.Controllers
                 return BadRequest();
             }
         }
+
         [HttpDelete("delete")]
         public IActionResult Delete([FromQuery] DateTime? dateStart, [FromQuery] DateTime? dateEnd)
         {
@@ -88,12 +90,11 @@ namespace homeworkASPNET.Controllers
             }
 
             bool founded = false;
-            // !!! backward direction only!
-            for (int i = holder.Values.Count - 1; i >= 0; i--)
+            for (int i = _holder.Values.Count - 1; i >= 0; i--)
             {
-                if (holder.Values[i].Date >= dateStart && holder.Values[i].Date <= dateEnd)
+                if (_holder.Values[i].Date >= dateStart && _holder.Values[i].Date <= dateEnd)
                 {
-                    holder.Values.RemoveAt(i);
+                    _holder.Values.RemoveAt(i);
                     founded = true;
                 }
             }
@@ -105,3 +106,4 @@ namespace homeworkASPNET.Controllers
         }
     }
 }
+
