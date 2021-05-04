@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using homeworkASPNET.Models;
 
 namespace homeworkASPNET
 {
@@ -26,6 +27,7 @@ namespace homeworkASPNET
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSingleton<ValuesHolder>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
