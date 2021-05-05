@@ -29,6 +29,5 @@ namespace MetricsManager.Controllers
         {
             return Ok();
         }
-
     }
 }

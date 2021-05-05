@@ -95,10 +95,11 @@ namespace MetricsManagerTests
             {
                 //Arrange
                 var agentId = 1;
-
+                var fromTime = TimeSpan.FromSeconds(0);
+                var toTime = TimeSpan.FromSeconds(100);
 
                 //Act
-                var result = controller.GetHddSpaceLeft(agentId);
+                var result = controller.GetHddSpaceLeft(agentId, fromTime, toTime);
 
                 // Assert
                 _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -118,10 +119,11 @@ namespace MetricsManagerTests
             {
                 //Arrange
                 var agentId = 1;
-
+                var fromTime = TimeSpan.FromSeconds(0);
+                var toTime = TimeSpan.FromSeconds(100);
 
                 //Act
-                var result = controller.GetRamSpaceLeft(agentId);
+                var result = controller.GetRamSpaceLeft(agentId, fromTime, toTime);
 
                 // Assert
                 _ = Assert.IsAssignableFrom<IActionResult>(result);

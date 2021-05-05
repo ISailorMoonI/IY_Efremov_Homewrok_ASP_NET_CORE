@@ -20,12 +20,11 @@ namespace MetricsAgentTests
             public void GetMetricsFromAgent_ReturnsOk()
             {
                 //Arrange
-                var agentId = 1;
                 var fromTime = TimeSpan.FromSeconds(0);
                 var toTime = TimeSpan.FromSeconds(100);
 
                 //Act
-                var result = controller.GetMetricsFromAgent(agentId, fromTime, toTime);
+                var result = controller.GetMetricsFromAgent(fromTime, toTime);
 
                 // Assert
                 _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -45,12 +44,11 @@ namespace MetricsAgentTests
             public void GetMetricsFromAgent_ReturnsOk()
             {
                 //Arrange
-                var agentId = 1;
                 var fromTime = TimeSpan.FromSeconds(0);
                 var toTime = TimeSpan.FromSeconds(100);
 
                 //Act
-                var result = controller.GetErrorsCountFromAgent(agentId, fromTime, toTime);
+                var result = controller.GetErrorsCountFromAgent(fromTime, toTime);
 
                 // Assert
                 _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -70,12 +68,11 @@ namespace MetricsAgentTests
             public void GetMetricsFromAgent_ReturnsOk()
             {
                 //Arrange
-                var agentId = 1;
                 var fromTime = TimeSpan.FromSeconds(0);
                 var toTime = TimeSpan.FromSeconds(100);
 
                 //Act
-                var result = controller.GetNetworkMetricsFromAgent(agentId, fromTime, toTime);
+                var result = controller.GetNetworkMetricsFromAgent(fromTime, toTime);
 
                 // Assert
                 _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -94,11 +91,12 @@ namespace MetricsAgentTests
             public void GetMetricsFromAgent_ReturnsOk()
             {
                 //Arrange
-                var agentId = 1;
-                
+                var fromTime = TimeSpan.FromSeconds(0);
+                var toTime = TimeSpan.FromSeconds(100);
+
 
                 //Act
-                var result = controller.GetHddSpaceLeft(agentId);
+                var result = controller.GetHddSpaceLeft(fromTime, toTime);
 
                 // Assert
                 _ = Assert.IsAssignableFrom<IActionResult>(result);
@@ -117,11 +115,11 @@ namespace MetricsAgentTests
             public void GetMetricsFromAgent_ReturnsOk()
             {
                 //Arrange
-                var agentId = 1;
-
+                var fromTime = TimeSpan.FromSeconds(0);
+                var toTime = TimeSpan.FromSeconds(100);
 
                 //Act
-                var result = controller.GetRamSpaceLeft(agentId);
+                var result = controller.GetRamSpaceLeft(fromTime, toTime);
 
                 // Assert
                 _ = Assert.IsAssignableFrom<IActionResult>(result);

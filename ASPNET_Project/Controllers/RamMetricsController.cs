@@ -11,8 +11,8 @@ namespace MetricsManager.Controllers
     [ApiController]
     public class RamMetricsController : ControllerBase
     {
-        [HttpGet("agent/{agentId}")]
-        public IActionResult GetRamSpaceLeft([FromRoute] int agentId)
+        [HttpGet("agent/{agentId}/from/{fromTime}/to{toTime}")]
+        public IActionResult GetRamSpaceLeft([FromRoute] int agentId, [FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             return Ok();
         }

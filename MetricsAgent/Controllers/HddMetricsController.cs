@@ -11,8 +11,8 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class HddMetricsController : ControllerBase
     {
-        [HttpGet("agent/{agentId}")]
-        public IActionResult GetHddSpaceLeft([FromRoute] int agentId)
+        [HttpGet("from/{fromTime}/to{toTime}")]
+        public IActionResult GetHddSpaceLeft([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
         {
             return Ok();
         }
