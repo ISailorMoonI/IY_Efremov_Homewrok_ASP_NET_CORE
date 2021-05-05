@@ -17,7 +17,7 @@ namespace MetricsManager.Controllers
         {
             return Ok();
         }
-
+        //
         [HttpPut("enable/{agentId}")]
         public IActionResult EnableAgentById([FromRoute] int agentId)
         {
