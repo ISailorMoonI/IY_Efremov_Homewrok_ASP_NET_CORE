@@ -4,23 +4,54 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MetricsAgent.DAL;
+using MetricsAgent.DAL.Repository;
+using MetricsAgent.DAL.Requests;
+using MetricsAgent.DAL.Responses;
+using MetricsAgent.Models;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/metrics/cpu")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CpuMetricsController : ControllerBase
     {
-        [HttpGet("from/{fromTime}/to{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        private ICpuMetricsRepository repository;
+
+        public CpuMetricsController(ICpuMetricsRepository repository)
         {
+            this.repository = repository;
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        {
+            repository.Create(new CpuMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
             return Ok();
         }
 
-        [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAllCluster([FromRoute] TimeSpan fromTime, [FromRoute] TimeSpan toTime)
+        [HttpGet("all")]
+        public IActionResult GetAll()
         {
-            return Ok();
+            var metrics = repository.GetAll();
+
+            var response = new AllCpuMetricsResponse()
+            {
+                Metrics = new List<CpuMetricDto>()
+            };
+
+            foreach (var metric in metrics)
+            {
+                response.Metrics.Add(new CpuMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+            }
+
+            return Ok(response);
         }
     }
 }
+

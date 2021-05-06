@@ -6,22 +6,12 @@
     "iisExpress": {
       "applicationUrl": "http://localhost:51684"
     }
-
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/metrics/cpu",
-      "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
-      }
-    },
-    "MetricsAgent": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "launchUrl": "api/metrics/cpu",
-      "applicationUrl": "http://localhost:51684",
+      "launchUrl": "api/CPUMetrics/read",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
