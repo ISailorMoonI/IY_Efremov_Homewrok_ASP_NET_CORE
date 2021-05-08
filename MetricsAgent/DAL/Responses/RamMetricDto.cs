@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace MetricsAgent.DAL.Responses
 {
-    public class AllCpuMetricsResponse
+    public class RamMetricsResponse
     {
-        public List<CpuMetricDto> Metrics { get; set; }
+        public List<RamMetricDto> Metrics { get; set; }
     }
 
-    public class CpuMetricDto
+    public class RamMetricDto
     {
         public TimeSpan Time { get; set; }
         public int Value { get; set; }

@@ -1,32 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.Models;
-using System.Data.SQLite;
 
 namespace MetricsAgent.DAL.Repository
 {
-    public interface IRepository<T> where T : class
+    public interface INetworkMetricsRepository : IRepository<NetworkMetric>
     {
-        IList<T> GetAll();
-
-        T GetById(int id);
-
-        void Create(T item);
-
     }
 
-    public interface ICpuMetricsRepository : IRepository<CpuMetric>
-    {
-
-    }
-
-    public class CpuMetricsRepository : ICpuMetricsRepository
+    public class NetworkMetricsRepository : INetworkMetricsRepository
     {
         private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
-        
-        public void Create(CpuMetric item)
+
+        public void Create(NetworkMetric item)
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
@@ -38,7 +27,7 @@ namespace MetricsAgent.DAL.Repository
             cmd.ExecuteNonQuery();
         }
 
-        public IList<CpuMetric> GetAll()
+        public IList<NetworkMetric> GetAll()
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
@@ -46,25 +35,25 @@ namespace MetricsAgent.DAL.Repository
 
             cmd.CommandText = "SELECT * FROM cpumetrics";
 
-            var returnList = new List<CpuMetric>();
+            var returnList = new List<NetworkMetric>();
 
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
                 {
-                    returnList.Add(new CpuMetric
+                    returnList.Add(new NetworkMetric
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
+
                         Time = TimeSpan.FromSeconds(reader.GetInt32(2))
                     });
                 }
             }
-
             return returnList;
         }
 
-        public CpuMetric GetById(int id)
+        public NetworkMetric GetById(int id)
         {
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
@@ -74,7 +63,7 @@ namespace MetricsAgent.DAL.Repository
             {
                 if (reader.Read())
                 {
-                    return new CpuMetric
+                    return new NetworkMetric
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
@@ -89,5 +78,3 @@ namespace MetricsAgent.DAL.Repository
         }
     }
 }
-
-
