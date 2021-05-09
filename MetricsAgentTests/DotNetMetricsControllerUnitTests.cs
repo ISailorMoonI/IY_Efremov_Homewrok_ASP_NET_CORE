@@ -24,7 +24,7 @@ namespace MetricsAgentTests
         public void Create_ShouldCall_Create_From_Repository()
         {
             mock.Setup(repository => repository.Create(It.IsAny<DotNetMetric>())).Verifiable();
-            var result = controller.Create(new MetricsAgent.DAL.Requests.DotNetMetricCreateRequest { Time = TimeSpan.FromSeconds(1), Value = 50 });
+            var result = controller.Create(new MetricsAgent.DAL.Requests.DotNetMetricCreateRequest { Time = DateTimeOffset.FromUnixTimeSeconds(1), Value = 50 });
             mock.Verify(repository => repository.Create(It.IsAny<DotNetMetric>()), Times.AtMostOnce());
         }
     }

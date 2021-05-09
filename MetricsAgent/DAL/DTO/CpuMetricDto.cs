@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MetricsAgent.DAL.Responses;
 
-namespace MetricsAgent.Models
+namespace MetricsAgent.DAL.DTO
 {
-    public class HddMetric
+    public class CpuMetricDto
     {
         public int Id { get; set; }
-
         public int Value { get; set; }
-
-        public DateTimeOffset Time { get; set; }
+        public long Time { get; set; }
     }
 }

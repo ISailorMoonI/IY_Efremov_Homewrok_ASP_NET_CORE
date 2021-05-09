@@ -10,22 +10,22 @@ using Xunit;
 namespace MetricsAgentTests
 {
     public class RamMetricsControllerUnitTests
+    {
+        private RamMetricsController controller;
+        private Mock<IRamMetricsRepository> mock;
+
+        public RamMetricsControllerUnitTests()
         {
-            private RamMetricsController controller;
-            private Mock<IRamMetricsRepository> mock;
+            mock = new Mock<IRamMetricsRepository>();
+            controller = new RamMetricsController(mock.Object);
+        }
 
-            public RamMetricsControllerUnitTests()
-            {
-                mock = new Mock<IRamMetricsRepository>();
-                controller = new RamMetricsController(mock.Object);
-            }
-
-            [Fact]
-            public void Create_ShouldCall_Create_From_Repository()
-            {
-                mock.Setup(repository => repository.Create(It.IsAny<RamMetric>())).Verifiable();
-                var result = controller.Create(new MetricsAgent.DAL.Requests.RamMetricCreateRequest { Time = TimeSpan.FromSeconds(1), Value = 50 });
-                mock.Verify(repository => repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
-            }
+        [Fact]
+        public void Create_ShouldCall_Create_From_Repository()
+        {
+            mock.Setup(repository => repository.Create(It.IsAny<RamMetric>())).Verifiable();
+            var result = controller.Create(new MetricsAgent.DAL.Requests.RamMetricCreateRequest { Time = DateTimeOffset.FromUnixTimeSeconds(1), Value = 50 });
+            mock.Verify(repository => repository.Create(It.IsAny<RamMetric>()), Times.AtMostOnce());
         }
     }
+}

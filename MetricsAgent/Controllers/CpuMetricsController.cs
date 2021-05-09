@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MetricsAgent.DAL;
+using MetricsAgent.Controllers;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
@@ -15,6 +15,7 @@ namespace MetricsAgent.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class CpuMetricsController : ControllerBase
     {
         private readonly ILogger<CpuMetricsController> _logger;
@@ -22,7 +23,7 @@ namespace MetricsAgent.Controllers
         public CpuMetricsController(ILogger<CpuMetricsController> logger, ICpuMetricsRepository repository)
         {
             _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+            _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
             this.repository = repository;
         }
 
@@ -36,7 +37,7 @@ namespace MetricsAgent.Controllers
         [HttpPost("create")]
         public IActionResult Create([FromBody] CpuMetricCreateRequest request)
         {
-            repository.Create(new CpuMetric
+            repository.Create(new CpuMetric()
             {
                 Time = request.Time,
                 Value = request.Value
@@ -50,14 +51,14 @@ namespace MetricsAgent.Controllers
         {
             var metrics = repository.GetAll();
 
-            var response = new AllCpuMetricsResponse()
+            var response = new CpuMetricsResponse()
             {
-                Metrics = new List<CpuMetricDto>()
+                Metrics = new List<CpuMetricResponse>()
             };
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(new CpuMetricResponse { Time = metric.Time, Value = metric.Value, Id = metric.Id });
             }
 
             return Ok(response);

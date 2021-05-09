@@ -5,14 +5,14 @@ using System.Threading.Tasks;
 
 namespace MetricsAgent.DAL.Responses
 {
-    public class AllDotNetMetricsResponse
+    public class RamMetricsResponse
     {
-        public List<DotNetMetricDto> Metrics { get; set; }
+        public List<RamMetricResponse> Metrics { get; set; }
     }
 
-    public class DotNetMetricDto
+    public class RamMetricResponse
     {
-        public TimeSpan Time { get; set; }
+        public DateTimeOffset Time { get; set; }
         public int Value { get; set; }
         public int Id { get; set; }
     }

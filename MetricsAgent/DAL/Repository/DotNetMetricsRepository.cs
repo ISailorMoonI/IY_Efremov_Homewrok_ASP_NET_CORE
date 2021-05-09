@@ -23,7 +23,7 @@ namespace MetricsAgent.DAL.Repository
             using var cmd = new SQLiteCommand(connection);
             cmd.CommandText = "INSERT INTO cpumetrics(value, time) VALUES(@value, @time)";
             cmd.Parameters.AddWithValue("@value", item.Value);
-            cmd.Parameters.AddWithValue("@time", item.Time.TotalSeconds);
+            cmd.Parameters.AddWithValue("@time", item.Time.ToUniversalTime());
             cmd.Prepare();
             cmd.ExecuteNonQuery();
         }
@@ -43,7 +43,7 @@ namespace MetricsAgent.DAL.Repository
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
-                        Time = TimeSpan.FromSeconds(reader.GetInt32(2))
+                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
                     });
                 }
             }
@@ -64,7 +64,7 @@ namespace MetricsAgent.DAL.Repository
                     {
                         Id = reader.GetInt32(0),
                         Value = reader.GetInt32(1),
-                        Time = TimeSpan.FromSeconds(reader.GetInt32(1))
+                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
                     };
                 }
                 else

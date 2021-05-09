@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MetricsAgent.Controllers;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
@@ -13,7 +14,8 @@ using Microsoft.Extensions.Logging;
 namespace MetricsAgent.Controllers
 {
     [Route("api/[controller]")]
- 
+    [ApiController]
+
     public class DotNetMetricsController : ControllerBase
     {
         private readonly ILogger<DotNetMetricsController> _logger;
@@ -49,14 +51,14 @@ namespace MetricsAgent.Controllers
         {
             var metrics = repository.GetAll();
 
-            var response = new AllDotNetMetricsResponse()
+            var response = new DotNetMetricsResponse()
             {
-                Metrics = new List<DotNetMetricDto>()
+                Metrics = new List<DotNetMetricResponse>()
             };
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new DotNetMetricDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(new DotNetMetricResponse { Time = metric.Time, Value = metric.Value, Id = metric.Id });
             }
 
             return Ok(response);
