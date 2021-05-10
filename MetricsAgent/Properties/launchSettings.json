@@ -4,14 +4,14 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:51684"
+      "applicationUrl": "http://localhost:15620"
     }
   },
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/CPUMetrics/read",
+      "launchUrl": "api/cpumetricscontroller/create",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

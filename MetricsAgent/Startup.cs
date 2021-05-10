@@ -31,6 +31,10 @@ namespace MetricsAgent
             services.AddControllers();
             ConfigureSqlLiteConnection(services);
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
+            services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
+            services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
+            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)
@@ -45,16 +49,42 @@ namespace MetricsAgent
         {
             using (var command = new SQLiteCommand(connection))
             {
-                // задаем новый текст команды для выполнения
-                // удаляем таблицу с метриками если она существует в базе данных
-                command.CommandText = "DROP TABLE IF EXISTS cpumetrics";
-                // отправляем запрос в базу данных
-                command.ExecuteNonQuery();
+                string[] tableNames = new string[]
+                {
+                    "cpumetrics",
+                    "dotnetmetrics",
+                    "hddmetrics",
+                    "networkmetrics",
+                    "rammetrics"
+                };
 
+                
+                foreach (string name in tableNames)
+                {
+                    command.CommandText = $"DROP TABLE IF EXISTS {name};";
+                    command.ExecuteNonQuery();
+                }
 
-                command.CommandText = @"CREATE TABLE cpumetrics(id INTEGER PRIMARY KEY,
-                    value INT, time INT)";
-                command.ExecuteNonQuery();
+                
+                foreach (string name in tableNames)
+                {
+                    command.CommandText = $"CREATE TABLE {name}(id INTEGER PRIMARY KEY, value INT, time BIGINT);";
+                    command.ExecuteNonQuery();
+                }
+
+                
+                byte valueShifter = 0;
+                foreach (string name in tableNames)
+                {
+                    for (int i = 0; i < 60; i += 5)
+                    {
+                        long time = System.DateTimeOffset.Parse("2021-05-01 00:" + i + ":00-00:00").ToUnixTimeSeconds();
+
+                        command.CommandText = $"INSERT INTO {name}(value, time) VALUES({i + valueShifter},{time});";
+                        command.ExecuteNonQuery();
+                    }
+                    valueShifter++;
+                }
             }
         }
 
