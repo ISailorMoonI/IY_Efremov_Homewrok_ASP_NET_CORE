@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.DAL;
 using System.Data.SQLite;
+using AutoMapper;
+using MetricsAgent.Controllers;
 using MetricsAgent.DAL.Repository;
 
 namespace MetricsAgent
@@ -35,6 +37,9 @@ namespace MetricsAgent
             services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
             services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
             services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)

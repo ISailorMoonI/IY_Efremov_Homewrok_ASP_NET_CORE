@@ -4,99 +4,94 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.Models;
 using System.Data.SQLite;
+using Dapper;
+
 namespace MetricsAgent.DAL.Repository
 {
-
     public interface ICpuMetricsRepository : IRepository<CpuMetric>
     {
     }
+
     public class CpuMetricsRepository : ICpuMetricsRepository
     {
-        private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
+        // строка подключения
+        private const string ConnectionString = @"Data Source=metrics.db; Version=3;Pooling=True;Max Pool Size=100;";
+
+        // инжектируем соединение с базой данных в наш репозиторий через конструктор
+        public CpuMetricsRepository()
+        {
+            // добавляем парсилку типа TimeSpan в качестве подсказки для SQLite
+            SqlMapper.AddTypeHandler(new TimeSpanHandler());
+        }
 
         public void Create(CpuMetric item)
         {
-            using var connection = new SQLiteConnection(ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "INSERT INTO cpumetrics(value, time) VALUES(@value, @time)";
-            cmd.Parameters.AddWithValue("@value", item.Value);
-            cmd.Parameters.AddWithValue("@time", item.Time.ToUniversalTime());
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                //  запрос на вставку данных с плейсхолдерами для параметров
+                connection.Execute("INSERT INTO cpumetrics(value, time) VALUES(@value, @time)",
+                    // анонимный объект с параметрами запроса
+                    new
+                    {
+                        // value подставится на место "@value" в строке запроса
+                        // значение запишется из поля Value объекта item
+                        value = item.Value,
+
+                        // записываем в поле time количество секунд
+                        time = item.Time.ToUnixTimeSeconds()
+                    });
+            }
+        }
+
+        public void Delete(int id)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Execute("DELETE FROM cpumetrics WHERE id=@id",
+                    new
+                    {
+                        id = id
+                    });
+            }
+        }
+
+        public void Update(CpuMetric item)
+        {
+            using (var connection = new SQLiteConnection(ConnectionString))
+            {
+                connection.Execute("UPDATE cpumetrics SET value = @value, time = @time WHERE id=@id",
+                    new
+                    {
+                        value = item.Value,
+                        time = item.Time.ToUnixTimeSeconds(),
+                        id = item.Id
+                    });
+            }
         }
 
         public IList<CpuMetric> GetAll()
         {
-            using var connection = new SQLiteConnection(ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics";
-            var returnList = new List<CpuMetric>();
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
-                while (reader.Read())
-                {
-                    returnList.Add(new CpuMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
-                    });
-                }
+                // читаем при помощи Query и в шаблон подставляем тип данных
+                // объект которого Dapper сам и заполнит его поля
+                // в соответсвии с названиями колонок
+                return connection.Query<CpuMetric>("SELECT Id, Time, Value FROM cpumetrics").ToList();
             }
-            return returnList;
         }
+
         public CpuMetric GetById(int id)
         {
-            using var connection = new SQLiteConnection(ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics WHERE id=@id";
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
-                if (reader.Read())
-                {
-                    return new CpuMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
-                    };
-                }
-                else
-                {
-                    return null;
-                }
+                return connection.QuerySingle<CpuMetric>("SELECT Id, Time, Value FROM cpumetrics WHERE id=@id",
+                    new { id = id });
             }
-        }
-        public IList<CpuMetric> GetFromTimeToTime(long fromTime, long toTime)
-        {
-            using var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics WHERE (time>=@fromTime) AND (time<=@toTime)";
-            cmd.Parameters.AddWithValue("@fromTime", fromTime);
-            cmd.Parameters.AddWithValue("@toTime", toTime);
-            cmd.Prepare();
-
-            var returnList = new List<CpuMetric>();
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
-            {
-                while (reader.Read())
-                {
-                    returnList.Add(new CpuMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
-                    });
-                }
-            }
-            return returnList;
         }
     }
 }
+
+
 
 
 

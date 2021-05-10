@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MetricsAgent.Controllers;
+using MetricsAgent.DAL.DTO;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
@@ -15,41 +17,22 @@ namespace MetricsAgent.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class CpuMetricsController : ControllerBase
     {
-        private readonly ILogger<CpuMetricsController> _logger;
+        private readonly ICpuMetricsRepository repository;
 
-        public CpuMetricsController(ILogger<CpuMetricsController> logger, ICpuMetricsRepository repository)
-        {
-            _logger = logger;
-            _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
-            this.repository = repository;
-        }
+        private readonly IMapper mapper;
 
-        private ICpuMetricsRepository repository;
-
-        public CpuMetricsController(ICpuMetricsRepository repository)
+        public CpuMetricsController(ICpuMetricsRepository repository, IMapper mapper)
         {
             this.repository = repository;
-        }
-
-        [HttpPost("create")]
-        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
-        {
-            repository.Create(new CpuMetric()
-            {
-                Time = request.Time,
-                Value = request.Value
-            });
-
-            return Ok();
+            this.mapper = mapper;
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = repository.GetAll();
+            IList<CpuMetric> metrics = repository.GetAll();
 
             var response = new CpuMetricsResponse()
             {
@@ -58,34 +41,12 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new CpuMetricResponseDto {Time = metric.Time, Value = metric.Value, Id = metric.Id});
+                response.Metrics.Add(mapper.Map<CpuMetricResponseDto>(metric));
             }
 
             return Ok(response);
         }
-
-        [HttpGet("from/{fromTime}/to/{toTime}")]
-        public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
-        {
-            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/cpumetrics/from/{fromTime}/to/{toTime}");
-
-            IList<CpuMetric> metrics = repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
-
-            var response = new CpuMetricsResponse()
-            {
-                Metrics = new List<CpuMetricResponseDto>()
-            };
-
-            if (metrics != null)
-            {
-                foreach (var metric in metrics)
-                {
-                    response.Metrics.Add(new CpuMetricResponseDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
-                }
-            }
-            return Ok(response);
-        }
-
     }
 }
+
 

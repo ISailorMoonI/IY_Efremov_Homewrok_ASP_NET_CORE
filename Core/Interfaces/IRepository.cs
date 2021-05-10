@@ -7,7 +7,7 @@ namespace MetricsAgent.DAL.Repository
 {
     public interface IRepository<T> where T : class
     {
-        IList<T> GetFromTimeToTime(long fromTime, long toTime);
+        //IList<T> GetFromTimeToTime(long fromTime, long toTime);
 
         IList<T> GetAll();
 
