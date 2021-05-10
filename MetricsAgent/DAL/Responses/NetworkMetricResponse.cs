@@ -7,10 +7,10 @@ namespace MetricsAgent.DAL.Responses
 {
     public class NetworkMetricsResponse
     {
-        public List<NetworkMetricResponse> Metrics { get; set; }
+        public List<NetworkMetricResponseDto> Metrics { get; set; }
     }
 
-    public class NetworkMetricResponse
+    public class NetworkMetricResponseDto
     {
         public DateTimeOffset Time { get; set; }
         public int Value { get; set; }

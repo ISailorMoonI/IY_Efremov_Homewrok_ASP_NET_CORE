@@ -50,14 +50,36 @@ namespace MetricsAgent.Controllers
 
             var response = new NetworkMetricsResponse()
             {
-                Metrics = new List<NetworkMetricResponse>()
+                Metrics = new List<NetworkMetricResponseDto>()
             };
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new NetworkMetricResponse { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(new NetworkMetricResponseDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
             }
 
+            return Ok(response);
+        }
+
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        {
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/cpumetrics/from/{fromTime}/to/{toTime}");
+
+            IList<NetworkMetric> metrics = repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+
+            var response = new NetworkMetricsResponse()
+            {
+                Metrics = new List<NetworkMetricResponseDto>()
+            };
+
+            if (metrics != null)
+            {
+                foreach (var metric in metrics)
+                {
+                    response.Metrics.Add(new NetworkMetricResponseDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                }
+            }
             return Ok(response);
         }
     }

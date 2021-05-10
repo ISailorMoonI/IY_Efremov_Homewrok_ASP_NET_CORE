@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MetricsAgent.DAL.Responses
+namespace MetricsManager.DAL.Responses
 {
-    public class HddMetricsResponse
+    public class CpuMetricsResponse
     {
-        public List<HddMetricResponseDto> Metrics { get; set; }
+        public List<CpuMetricResponseDto> Metrics { get; set; }
     }
 
-    public class HddMetricResponseDto
+    public class CpuMetricResponseDto
     {
         public DateTimeOffset Time { get; set; }
         public int Value { get; set; }

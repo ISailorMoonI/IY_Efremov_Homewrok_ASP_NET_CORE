@@ -49,16 +49,38 @@ namespace MetricsAgent.Controllers
         {
             var metrics = repository.GetAll();
 
-            var response = new DotNetMetricsResponse()
+            var response = new RamMetricsResponse()
             {
-                Metrics = new List<DotNetMetricResponse>()
+                Metrics = new List<RamMetricResponseDto>()
             };
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new DotNetMetricResponse { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(new RamMetricResponseDto() { Time = metric.Time, Value = metric.Value, Id = metric.Id });
             }
 
+            return Ok(response);
+        }
+
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        {
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/cpumetrics/from/{fromTime}/to/{toTime}");
+
+            IList<RamMetric> metrics = repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+
+            var response = new RamMetricsResponse()
+            {
+                Metrics = new List<RamMetricResponseDto>()
+            };
+
+            if (metrics != null)
+            {
+                foreach (var metric in metrics)
+                {
+                    response.Metrics.Add(new RamMetricResponseDto() { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                }
+            }
             return Ok(response);
         }
     }

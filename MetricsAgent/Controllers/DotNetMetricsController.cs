@@ -53,12 +53,35 @@ namespace MetricsAgent.Controllers
 
             var response = new DotNetMetricsResponse()
             {
-                Metrics = new List<DotNetMetricResponse>()
+                Metrics = new List<DotNetMetricResponseDto>()
             };
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new DotNetMetricResponse { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(new DotNetMetricResponseDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+            }
+
+            return Ok(response);
+        }
+
+        [HttpGet("from/{fromTime}/to/{toTime}")]
+        public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        {
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/dotnetmetrics/from/{fromTime}/to/{toTime}");
+
+            IList<DotNetMetric> metrics = repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+
+            var response = new DotNetMetricsResponse()
+            {
+                Metrics = new List<DotNetMetricResponseDto>()
+            };
+
+            if (metrics != null)
+            {
+                foreach (var metric in metrics)
+                {
+                    response.Metrics.Add(new DotNetMetricResponseDto() { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                }
             }
 
             return Ok(response);

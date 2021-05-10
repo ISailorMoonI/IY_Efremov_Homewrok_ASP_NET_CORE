@@ -7,10 +7,10 @@ namespace MetricsAgent.DAL.Responses
 {
     public class CpuMetricsResponse
     {
-        public List<CpuMetricResponse> Metrics { get; set; }
+        public List<CpuMetricResponseDto> Metrics { get; set; }
     }
 
-    public class CpuMetricResponse
+    public class CpuMetricResponseDto
     {
         public DateTimeOffset Time { get; set; }
         public int Value { get; set; }

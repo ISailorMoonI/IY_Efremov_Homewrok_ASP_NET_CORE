@@ -32,11 +32,8 @@ namespace MetricsAgent.DAL.Repository
             using var connection = new SQLiteConnection(ConnectionString);
             connection.Open();
             using var cmd = new SQLiteCommand(connection);
-
             cmd.CommandText = "SELECT * FROM cpumetrics";
-
             var returnList = new List<NetworkMetric>();
-
             using (SQLiteDataReader reader = cmd.ExecuteReader())
             {
                 while (reader.Read())
@@ -75,6 +72,32 @@ namespace MetricsAgent.DAL.Repository
                     return null;
                 }
             }
+        }
+
+        public IList<NetworkMetric> GetFromTimeToTime(long fromTime, long toTime)
+        {
+            using var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString);
+            connection.Open();
+            using var cmd = new SQLiteCommand(connection);
+            cmd.CommandText = "SELECT * FROM networkmetrics WHERE (time>=@fromTime) AND (time<=@toTime)";
+            cmd.Parameters.AddWithValue("@fromTime", fromTime);
+            cmd.Parameters.AddWithValue("@toTime", toTime);
+            cmd.Prepare();
+
+            var returnList = new List<NetworkMetric>();
+            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            {
+                while (reader.Read())
+                {
+                    returnList.Add(new NetworkMetric()
+                    {
+                        Id = reader.GetInt32(0),
+                        Value = reader.GetInt32(1),
+                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
+                    });
+                }
+            }
+            return returnList;
         }
     }
 }
