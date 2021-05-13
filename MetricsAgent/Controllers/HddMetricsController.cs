@@ -16,18 +16,12 @@ namespace MetricsAgent.Controllers
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
+        private IHddMetricsRepository repository;
 
         public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в HddMetricsController");
-            this.repository = repository;
-        }
-
-        private IHddMetricsRepository repository;
-
-        public HddMetricsController(IHddMetricsRepository repository)
-        {
             this.repository = repository;
         }
 

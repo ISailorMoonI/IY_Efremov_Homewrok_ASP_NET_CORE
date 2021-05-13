@@ -16,6 +16,7 @@ namespace MetricsAgent.Controllers
     public class NetworkMetricsController : ControllerBase
     {
         private readonly ILogger<NetworkMetricsController> _logger;
+        private INetworkMetricsRepository repository;
 
         public NetworkMetricsController(ILogger<NetworkMetricsController> logger, INetworkMetricsRepository repository)
         {
@@ -24,12 +25,6 @@ namespace MetricsAgent.Controllers
             this.repository = repository;
         }
 
-        private INetworkMetricsRepository repository;
-
-        public NetworkMetricsController(INetworkMetricsRepository repository)
-        {
-            this.repository = repository;
-        }
 
         [HttpPost("create")]
         public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
