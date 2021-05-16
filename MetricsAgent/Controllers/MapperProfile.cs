@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MetricsAgent.DAL.DTO;
+using MetricsAgent.DAL.Responses;
 using MetricsAgent.Models;
 
 namespace MetricsAgent.Controllers
@@ -8,8 +9,11 @@ namespace MetricsAgent.Controllers
     {
         public MapperProfile()
         {
-            // добавлять сопоставления в таком стиле нужно для всех объектов 
-            CreateMap<CpuMetric, CpuMetricDto>();
+            CreateMap<CpuMetric, CpuMetricResponseDto>();
+            CreateMap<DotNetMetric, DotNetMetricResponseDto>();
+            CreateMap<HddMetric, HddMetricResponseDto>();
+            CreateMap<NetworkMetric, NetworkMetricResponseDto>();
+            CreateMap<RamMetric, RamMetricResponseDto>();
         }
     }
 }

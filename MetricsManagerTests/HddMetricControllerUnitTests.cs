@@ -4,6 +4,7 @@ using Xunit;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
+using AutoMapper;
 using MetricsManager.Controllers;
 using MetricsManager.DAL;
 using MetricsManager.DAL.Repository;
@@ -14,13 +15,14 @@ namespace MetricsManagerTests
     {
         private HddMetricsController controller;
         private Mock<IHddMetricsRepository> mock;
-        private Mock<ILogger<HddMetricsController>> logger;
+        private Mock<ILogger<HddMetricsController>> _logger;
+        private readonly IMapper _mapper;
 
         public HddMetricControllerUnitTests()
         {
             mock = new Mock<IHddMetricsRepository>();
-            logger = new Mock<ILogger<HddMetricsController>>();
-            controller = new HddMetricsController(logger.Object, mock.Object);
+            _logger = new Mock<ILogger<HddMetricsController>>();
+            controller = new HddMetricsController(_logger.Object, mock.Object, _mapper);
         }
 
         [Fact]

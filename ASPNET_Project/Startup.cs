@@ -14,7 +14,6 @@ using MetricsManager.DAL;
 using System.Data.SQLite;
 using ASPNET_Project.Models;
 using MetricsManager.DAL.Repository;
-using MetricsManager.DAL.Repository.MetricsManager.DAL;
 
 namespace MetricsManager
 {

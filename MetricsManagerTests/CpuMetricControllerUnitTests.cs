@@ -4,9 +4,10 @@ using Xunit;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
+using AutoMapper;
 using MetricsManager.Controllers;
 using MetricsManager.DAL;
-using MetricsManager.DAL.Repository.MetricsManager.DAL;
+using MetricsManager.DAL.Repository;
 
 namespace MetricsManagerTests
 {
@@ -14,13 +15,14 @@ namespace MetricsManagerTests
     {
         private CpuMetricsController controller;
         private Mock<ICpuMetricsRepository> mock;
-        private Mock<ILogger<CpuMetricsController>> logger;
+        private Mock<ILogger<CpuMetricsController>> _logger;
+        private readonly IMapper _mapper;
 
         public CpuControllerUnitTests()
         {
             mock = new Mock<ICpuMetricsRepository>();
-            logger = new Mock<ILogger<CpuMetricsController>>();
-            controller = new CpuMetricsController(logger.Object, mock.Object);
+            _logger = new Mock<ILogger<CpuMetricsController>>();
+            controller = new CpuMetricsController(_logger.Object, mock.Object, _mapper);
         }
 
         [Fact]
@@ -32,7 +34,6 @@ namespace MetricsManagerTests
             var result = controller.GetMetricsFromAgentIdTimeToTime(agentId, fromTime, toTime);
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
-
 
         [Fact]
         public void GetMetricsFromAllClusterTimeToTime_ReturnsOk()

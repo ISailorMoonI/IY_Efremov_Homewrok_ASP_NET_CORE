@@ -22,8 +22,7 @@ namespace MetricsManager.Controllers
         [HttpPost("register")]
         public IActionResult RegisterAgent([FromBody] AgentInfo agentInfo)
         {
-            _logger.LogTrace(
-                $"{DateTime.Now.ToString("HH: mm:ss: fffffff")}: AgentsController/api/register: AgentID={agentInfo.AgentId}, AgentAdress={agentInfo.AgentAddress}");
+            _logger.LogTrace($"{DateTime.Now.ToString("HH: mm:ss: fffffff")}: AgentsController/api/register: AgentID={agentInfo.AgentId}, AgentAdress={agentInfo.AgentAddress}");
             _registeredAgents.Add(agentInfo);
             return Ok();
         }

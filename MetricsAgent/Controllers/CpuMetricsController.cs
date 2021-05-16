@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MetricsAgent.Controllers;
 using MetricsAgent.DAL.DTO;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
@@ -19,20 +20,22 @@ namespace MetricsAgent.Controllers
     [ApiController]
     public class CpuMetricsController : ControllerBase
     {
-        private readonly ICpuMetricsRepository repository;
+        private readonly ILogger<CpuMetricsController> _logger;
+        private ICpuMetricsRepository _repository;
+        private readonly IMapper _mapper;
 
-        private readonly IMapper mapper;
-
-        public CpuMetricsController(ICpuMetricsRepository repository, IMapper mapper)
+        public CpuMetricsController(ILogger<CpuMetricsController> logger, ICpuMetricsRepository repository, IMapper mapper)
         {
-            this.repository = repository;
-            this.mapper = mapper;
+            _logger = logger;
+            _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            IList<CpuMetric> metrics = repository.GetAll();
+            IList<CpuMetric> metrics = _repository.GetAll();
 
             var response = new CpuMetricsResponse()
             {
@@ -41,7 +44,29 @@ namespace MetricsAgent.Controllers
 
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(mapper.Map<CpuMetricResponseDto>(metric));
+                response.Metrics.Add(_mapper.Map<CpuMetricResponseDto>(metric));
+            }
+
+            return Ok(response);
+        }
+
+        public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
+        {
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/cpumetrics/from/{fromTime}/to/{toTime}");
+
+            IList<CpuMetric> metrics = _repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+
+            var response = new CpuMetricsResponse()
+            {
+                Metrics = new List<CpuMetricResponseDto>()
+            };
+
+            if (metrics != null)
+            {
+                foreach (var metric in metrics)
+                {
+                    response.Metrics.Add(_mapper.Map<CpuMetricResponseDto>(metric));
+                }
             }
 
             return Ok(response);

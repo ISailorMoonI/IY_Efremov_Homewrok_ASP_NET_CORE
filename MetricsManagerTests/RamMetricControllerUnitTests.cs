@@ -4,6 +4,7 @@ using Xunit;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
+using AutoMapper;
 using MetricsManager.Controllers;
 using MetricsManager.DAL;
 using MetricsManager.DAL.Repository;
@@ -12,15 +13,16 @@ namespace MetricsManagerTests
 {
     public class RamMetricControllerUnitTests
     {
-        private RamMetricsController controller;
+        private RamMetricsController _controller;
         private Mock<IRamMetricsRepository> mock;
-        private Mock<ILogger<RamMetricsController>> logger;
+        private Mock<ILogger<RamMetricsController>> _logger;
+        private readonly IMapper _mapper;
 
         public RamMetricControllerUnitTests()
         {
             mock = new Mock<IRamMetricsRepository>();
-            logger = new Mock<ILogger<RamMetricsController>>();
-            controller = new RamMetricsController(logger.Object, mock.Object);
+            _logger = new Mock<ILogger<RamMetricsController>>();
+            _controller = new RamMetricsController(_logger.Object, mock.Object, _mapper);
         }
 
         [Fact]
@@ -29,15 +31,16 @@ namespace MetricsManagerTests
             var agentId = 1;
             var fromTime = DateTimeOffset.FromUnixTimeSeconds(10);
             var toTime = DateTimeOffset.FromUnixTimeSeconds(100);
-            var result = controller.GetMetricsFromAgentIdTimeToTime(agentId, fromTime, toTime);
+            var result = _controller.GetMetricsFromAgentIdTimeToTime(agentId, fromTime, toTime);
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
+
         [Fact]
         public void GetMetricsFromAllClusterTimeToTime_ReturnsOk()
         {
             var fromTime = DateTimeOffset.FromUnixTimeSeconds(10);
             var toTime = DateTimeOffset.FromUnixTimeSeconds(100);
-            var result = controller.GetMetricsFromAllClusterTimeToTime(fromTime, toTime);
+            var result = _controller.GetMetricsFromAllClusterTimeToTime(fromTime, toTime);
             _ = Assert.IsAssignableFrom<IActionResult>(result);
         }
     }
