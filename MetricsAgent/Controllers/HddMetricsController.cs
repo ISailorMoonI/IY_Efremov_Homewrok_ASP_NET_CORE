@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using MetricsAgent.DAL.DTO;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
@@ -32,18 +33,17 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<HddMetric, HddMetricDto>());
+            var m = config.CreateMapper();
             IList<HddMetric> metrics = _repository.GetAll();
-
             var response = new HddMetricsResponse()
             {
                 Metrics = new List<HddMetricResponseDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<HddMetricResponseDto>(metric));
+                response.Metrics.Add(m.Map<HddMetricResponseDto>(metric));
             }
-
             return Ok(response);
         }
 

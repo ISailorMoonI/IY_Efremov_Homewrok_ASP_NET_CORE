@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MetricsAgent.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cpu")]
     [ApiController]
     public class CpuMetricsController : ControllerBase
     {
@@ -35,18 +35,17 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<CpuMetric, CpuMetricDto>());
+            var m = config.CreateMapper();
             IList<CpuMetric> metrics = _repository.GetAll();
-
             var response = new CpuMetricsResponse()
             {
                 Metrics = new List<CpuMetricResponseDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<CpuMetricResponseDto>(metric));
+                response.Metrics.Add(m.Map<CpuMetricResponseDto>(metric));
             }
-
             return Ok(response);
         }
 

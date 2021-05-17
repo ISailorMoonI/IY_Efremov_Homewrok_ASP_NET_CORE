@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using MetricsAgent.Controllers;
+using MetricsAgent.DAL.DTO;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
@@ -35,18 +36,17 @@ namespace MetricsAgent.Controllers
         [HttpGet("all")]
         public IActionResult GetAll()
         {
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<DotNetMetric, DotNetMetricDto>());
+            var m = config.CreateMapper();
             IList<DotNetMetric> metrics = _repository.GetAll();
-
             var response = new DotNetMetricsResponse()
             {
                 Metrics = new List<DotNetMetricResponseDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(_mapper.Map<DotNetMetricResponseDto>(metric));
+                response.Metrics.Add(m.Map<DotNetMetricResponseDto>(metric));
             }
-
             return Ok(response);
         }
 
