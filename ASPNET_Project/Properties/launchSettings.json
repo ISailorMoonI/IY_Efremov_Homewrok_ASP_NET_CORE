@@ -9,22 +9,13 @@
   },
   "profiles": {
     "IIS Express": {
-        "commandName": "IISExpress",
-        "launchBrowser": true,
-        "launchUrl": "api/crud/read",
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-
-        }
-      },
-      "ASPNET_Project": {
-        "commandName": "Project",
-        "launchBrowser": true,
-        "launchUrl": "Cpumetrics",
-        "applicationUrl": "https://localhost:5001;http://localhost:5000",
-        "environmentVariables": {
-          "ASPNETCORE_ENVIRONMENT": "Development"
-        }
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "api/metrics/cpu",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
+}
+
