@@ -15,7 +15,7 @@ namespace MetricsAgent.DAL.Repository
 
         public DotNetMetricsRepository()
         {
-            SqlMapper.AddTypeHandler(new TimeSpanHandler());
+            SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
         }
 
         public IList<DotNetMetric> GetAll()
@@ -30,12 +30,26 @@ namespace MetricsAgent.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                return connection.Query<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                return connection.Query<DotNetMetric>(
+                    "SELECT Id, Time, Value FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                     new
                     {
                         fromTime = fromTime,
                         toTime = toTime,
                     }).ToList();
+            }
+        }
+
+        public void Create(DotNetMetric item)
+        {
+            using var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString);
+            {
+                connection.Execute("INSERT INTO dotnetmetrics(value, time) VALUES(@value, @time)",
+                    new
+                    {
+                        value = item.Value,
+                        time = item.Time.ToUniversalTime().ToUnixTimeSeconds()
+                    });
             }
         }
     }

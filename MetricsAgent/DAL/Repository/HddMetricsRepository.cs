@@ -9,7 +9,7 @@ using MetricsAgent.Models;
 
 namespace MetricsAgent.DAL.Repository
 {
-    
+
 
     public class HddMetricsRepository : IHddMetricsRepository
     {
@@ -17,7 +17,7 @@ namespace MetricsAgent.DAL.Repository
 
         public HddMetricsRepository()
         {
-            SqlMapper.AddTypeHandler(new TimeSpanHandler());
+            SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
         }
 
         public IList<HddMetric> GetAll()
@@ -32,12 +32,26 @@ namespace MetricsAgent.DAL.Repository
         {
             using (var connection = new SQLiteConnection(ConnectionString))
             {
-                return connection.Query<HddMetric>("SELECT Id, Time, Value FROM hddmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                return connection.Query<HddMetric>(
+                    "SELECT Id, Time, Value FROM hddmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                     new
                     {
                         fromTime = fromTime,
                         toTime = toTime,
                     }).ToList();
+            }
+        }
+
+        public void Create(HddMetric item)
+        {
+            using var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString);
+            {
+                connection.Execute("INSERT INTO hddmetrics(value, time) VALUES(@value, @time)",
+                    new
+                    {
+                        value = item.Value,
+                        time = item.Time.ToUniversalTime().ToUnixTimeSeconds()
+                    });
             }
         }
     }
