@@ -11,7 +11,7 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "api/cpu//from/2020-05-01T00:13:45-00:00/to/2021-05-04T00:01:45-00:00",
+      "launchUrl": "api/cpu/all",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
