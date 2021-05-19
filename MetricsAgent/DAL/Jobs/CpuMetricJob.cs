@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using MetricsAgent.DAL.Interfaces;
 using Quartz;
 using System.Diagnostics;
+using MetricsAgent.DAL.Interfaces;
+using MetricsAgent.DAL.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MetricsAgent.DAL.Jobs

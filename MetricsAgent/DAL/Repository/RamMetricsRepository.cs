@@ -9,7 +9,7 @@ using MetricsAgent.Models;
 
 namespace MetricsAgent.DAL.Repository
 {
-
+    
 
     public class RamMetricsRepository : IRamMetricsRepository
     {
@@ -18,14 +18,6 @@ namespace MetricsAgent.DAL.Repository
         public RamMetricsRepository()
         {
             SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
-        }
-
-        public IList<RamMetric> GetAll()
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.Query<RamMetric>("SELECT Id, Time, Value FROM rammetrics").ToList();
-            }
         }
 
         public IList<RamMetric> GetFromTimeToTime(long fromTime, long toTime)

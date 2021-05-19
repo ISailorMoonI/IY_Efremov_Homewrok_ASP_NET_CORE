@@ -9,8 +9,6 @@ namespace MetricsAgent.DAL.Repository
     {
         IList<T> GetFromTimeToTime(long fromTime, long toTime);
 
-        IList<T> GetAll();
-
         void Create(T item);
     }
 }

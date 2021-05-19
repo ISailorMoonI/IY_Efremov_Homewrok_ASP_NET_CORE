@@ -9,7 +9,7 @@ using MetricsAgent.Models;
 
 namespace MetricsAgent.DAL.Repository
 {
-
+    
 
     public class NetworkMetricsRepository : INetworkMetricsRepository
     {
@@ -18,14 +18,6 @@ namespace MetricsAgent.DAL.Repository
         public NetworkMetricsRepository()
         {
             SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
-        }
-
-        public IList<NetworkMetric> GetAll()
-        {
-            using (var connection = new SQLiteConnection(ConnectionString))
-            {
-                return connection.Query<NetworkMetric>("SELECT Id, Time, Value FROM networkmetrics").ToList();
-            }
         }
 
         public IList<NetworkMetric> GetFromTimeToTime(long fromTime, long toTime)

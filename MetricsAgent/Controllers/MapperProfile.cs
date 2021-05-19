@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using MetricsAgent.DAL.DTO;
 using MetricsAgent.DAL.Responses;
 using MetricsAgent.Models;
 
