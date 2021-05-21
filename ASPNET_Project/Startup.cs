@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using MetricsManager.DAL;
 using System.Data.SQLite;
 using ASPNET_Project.Models;
+using AutoMapper;
+using MetricsManager.Controllers;
 using MetricsManager.DAL.Repository;
 
 namespace MetricsManager
@@ -29,13 +31,16 @@ namespace MetricsManager
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddSingleton<List<AgentInfo>>();
             ConfigureSqlLiteConnection(services);
+
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
+
             services.AddScoped<ICpuMetricsRepository, CpuMetricsRepository>();
             services.AddScoped<IDotNetMetricsRepository, DotNetMetricsRepository>();
             services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
-            services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
+            services.AddScoped<INetworkMetricsRepository, NetWorkMetricsRepository>();
             services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
         }
 

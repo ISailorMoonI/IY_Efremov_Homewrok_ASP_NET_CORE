@@ -21,7 +21,7 @@ namespace MetricsAgent.DAL.Repository
 
         public IList<DotNetMetric> GetFromTimeToTime(long fromTime, long toTime)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString))
             {
                 return connection.Query<DotNetMetric>(
                     "SELECT Id, Time, Value FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",

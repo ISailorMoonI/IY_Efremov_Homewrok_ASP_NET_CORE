@@ -19,7 +19,7 @@ namespace MetricsAgent.DAL.Migrations
 
         public override void Down()
         {
-            Delete.Table("rammetrics");
+          
         }
     }
 }

@@ -29,6 +29,7 @@ namespace MetricsAgent.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/networkmetrics/from/{fromTime}/to/{toTime}");

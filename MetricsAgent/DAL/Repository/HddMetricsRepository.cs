@@ -22,7 +22,7 @@ namespace MetricsAgent.DAL.Repository
 
             public IList<HddMetric> GetFromTimeToTime(long fromTime, long toTime)
             {
-                using (var connection = new SQLiteConnection(ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString))
                 {
                     return connection.Query<HddMetric>(
                         "SELECT Id, Time, Value FROM hddmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",

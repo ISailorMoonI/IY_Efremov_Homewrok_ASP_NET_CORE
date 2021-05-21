@@ -6,6 +6,7 @@ using Quartz;
 using System.Diagnostics;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
+using MetricsAgent.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MetricsAgent.DAL.Jobs
@@ -26,7 +27,7 @@ namespace MetricsAgent.DAL.Jobs
         {
             var cpuUsageInPercents = Convert.ToInt32(_cpuCounter.NextValue());
             var time = DateTimeOffset.UtcNow;
-            _repository.Create(new Models.CpuMetric { Time = time, Value = cpuUsageInPercents });
+            _repository.Create(new CpuMetric { Time = time, Value = cpuUsageInPercents });
             return Task.CompletedTask;
         }
 

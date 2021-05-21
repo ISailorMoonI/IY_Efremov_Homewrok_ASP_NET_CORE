@@ -22,7 +22,7 @@ namespace MetricsAgent.DAL.Repository
 
         public IList<RamMetric> GetFromTimeToTime(long fromTime, long toTime)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString))
             {
                 return connection.Query<RamMetric>(
                     "SELECT Id, Time, Value FROM rammetrics WHERE (time>=@fromTime) AND (time<=@toTime)",

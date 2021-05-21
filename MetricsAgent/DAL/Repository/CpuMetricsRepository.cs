@@ -21,7 +21,7 @@ namespace MetricsAgent.DAL.Repository
 
         public IList<CpuMetric> GetFromTimeToTime(long fromTime, long toTime)
         {
-            using (var connection = new SQLiteConnection(ConnectionString))
+            using (var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString))
             {
                 return connection.Query<CpuMetric>(
                     "SELECT Id, Time, Value FROM cpumetrics WHERE (time>=@fromTime) AND (time<=@toTime)",

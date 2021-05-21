@@ -27,8 +27,6 @@ namespace MetricsAgent
 {
     public class Startup
     {
-        private const string ConnectionString = @"Data Source=metrics.db; Version=3;";
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -43,18 +41,19 @@ namespace MetricsAgent
             services.AddControllers();
             services.AddSingleton(mapper);
 
+            services.AddFluentMigratorCore().ConfigureRunner(rb => rb
+                .AddSQLite()
+                .WithGlobalConnectionString(DataBaseConnectionSettings.ConnectionString)
+                .ScanIn(typeof(Startup).Assembly).For.Migrations()
+            ).AddLogging(lb => lb
+                .AddFluentMigratorConsole());
+
             services.AddSingleton<ICpuMetricsRepository, CpuMetricsRepository>();
             services.AddSingleton<IDotNetMetricsRepository, DotNetMetricsRepository>();
             services.AddSingleton<IHddMetricsRepository, HddMetricsRepository>();
             services.AddSingleton<INetworkMetricsRepository, NetworkMetricsRepository>();
             services.AddSingleton<IRamMetricsRepository, RamMetricsRepository>();
 
-            services.AddFluentMigratorCore().ConfigureRunner(rb => rb
-                    .AddSQLite()
-                    .WithGlobalConnectionString(ConnectionString)
-                    .ScanIn(typeof(Startup).Assembly).For.Migrations()
-                ).AddLogging(lb => lb
-                    .AddFluentMigratorConsole());
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
@@ -64,6 +63,7 @@ namespace MetricsAgent
             services.AddSingleton<NetWorkMetricJob>();
             services.AddSingleton<RamMetricJob>();
 
+            services.AddSingleton(new JobSchedule(jobType: typeof(CpuMetricJob), cronExpression: "0/5 * * * * ?"));
             services.AddSingleton(new JobSchedule(jobType: typeof(NetWorkMetricJob), cronExpression: "0/5 * * * * ?"));
             services.AddSingleton(new JobSchedule(jobType: typeof(DotNetMetricJob), cronExpression: "0/5 * * * * ?"));
             services.AddSingleton(new JobSchedule(jobType: typeof(HddMetricJob), cronExpression: "0/5 * * * * ?"));
