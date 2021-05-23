@@ -4,7 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using MetricsAgent.Controllers;
+using MetricsAgent.DAL.DTO;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
@@ -19,12 +22,28 @@ namespace MetricsAgent.Controllers
     public class DotNetMetricsController : ControllerBase
     {
         private readonly ILogger<DotNetMetricsController> _logger;
+<<<<<<< HEAD
         private IDotNetMetricsRepository repository;
+=======
+<<<<<<< HEAD
+        private IDotNetMetricsRepository _repository;
+        private readonly IMapper _mapper;
+=======
+        private IDotNetMetricsRepository repository;
+>>>>>>> master
+>>>>>>> Lesson4
 
-        public DotNetMetricsController(ILogger<DotNetMetricsController> logger, IDotNetMetricsRepository repository)
+        public DotNetMetricsController(ILogger<DotNetMetricsController> logger, IDotNetMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            _repository = repository;
+            _mapper = mapper;
+=======
+>>>>>>> Lesson4
             this.repository = repository;
         }
 
@@ -38,32 +57,31 @@ namespace MetricsAgent.Controllers
             });
 
             return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = repository.GetAll();
-
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<DotNetMetric, DotNetMetricDto>());
+            var m = config.CreateMapper();
+            IList<DotNetMetric> metrics = _repository.GetAll();
             var response = new DotNetMetricsResponse()
             {
                 Metrics = new List<DotNetMetricResponseDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new DotNetMetricResponseDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(m.Map<DotNetMetricResponseDto>(metric));
             }
-
             return Ok(response);
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/dotnetmetrics/from/{fromTime}/to/{toTime}");
 
-            IList<DotNetMetric> metrics = repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+            IList<DotNetMetric> metrics = _repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
             var response = new DotNetMetricsResponse()
             {
@@ -74,7 +92,7 @@ namespace MetricsAgent.Controllers
             {
                 foreach (var metric in metrics)
                 {
-                    response.Metrics.Add(new DotNetMetricResponseDto() { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                    response.Metrics.Add(_mapper.Map<DotNetMetricResponseDto>(metric));
                 }
             }
 

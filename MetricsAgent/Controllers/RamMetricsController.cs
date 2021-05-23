@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using MetricsAgent.DAL.DTO;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
@@ -17,12 +20,28 @@ namespace MetricsAgent.Controllers
     public class RamMetricsController : ControllerBase
     {
         private readonly ILogger<RamMetricsController> _logger;
+<<<<<<< HEAD
         private IRamMetricsRepository repository;
+=======
+<<<<<<< HEAD
+        private IRamMetricsRepository _repository;
+        private readonly IMapper _mapper;
+=======
+        private IRamMetricsRepository repository;
+>>>>>>> master
+>>>>>>> Lesson4
 
-        public RamMetricsController(ILogger<RamMetricsController> logger, IRamMetricsRepository repository)
+        public RamMetricsController(ILogger<RamMetricsController> logger, IRamMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в RamMetricsController");
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            _repository = repository;
+            _mapper = mapper;
+=======
+>>>>>>> Lesson4
             this.repository = repository;
         }
 
@@ -36,32 +55,31 @@ namespace MetricsAgent.Controllers
             });
 
             return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = repository.GetAll();
-
-            var response = new RamMetricsResponse()
-            {
-                Metrics = new List<RamMetricResponseDto>()
-            };
-
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(new RamMetricResponseDto() { Time = metric.Time, Value = metric.Value, Id = metric.Id });
-            }
-
-            return Ok(response);
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<RamMetric, RamMetricDto>());
+                var m = config.CreateMapper();
+                IList<RamMetric> metrics = _repository.GetAll();
+                var response = new RamMetricsResponse()
+                {
+                    Metrics = new List<RamMetricResponseDto>()
+                };
+                foreach (var metric in metrics)
+                {
+                    response.Metrics.Add(m.Map<RamMetricResponseDto>(metric));
+                }
+                return Ok(response);
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/cpumetrics/from/{fromTime}/to/{toTime}");
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/dotnetmetrics/from/{fromTime}/to/{toTime}");
 
-            IList<RamMetric> metrics = repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+            IList<RamMetric> metrics = _repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
             var response = new RamMetricsResponse()
             {
@@ -72,9 +90,10 @@ namespace MetricsAgent.Controllers
             {
                 foreach (var metric in metrics)
                 {
-                    response.Metrics.Add(new RamMetricResponseDto() { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                    response.Metrics.Add(_mapper.Map<RamMetricResponseDto>(metric));
                 }
             }
+
             return Ok(response);
         }
     }

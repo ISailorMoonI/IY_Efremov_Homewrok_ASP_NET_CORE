@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using MetricsAgent.DAL.DTO;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
@@ -16,12 +19,28 @@ namespace MetricsAgent.Controllers
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
+<<<<<<< HEAD
         private IHddMetricsRepository repository;
+=======
+<<<<<<< HEAD
+        private IHddMetricsRepository _repository;
+        private readonly IMapper _mapper;
+=======
+        private IHddMetricsRepository repository;
+>>>>>>> master
+>>>>>>> Lesson4
 
-        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository)
+        public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в HddMetricsController");
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+            _repository = repository;
+            _mapper = mapper;
+=======
+>>>>>>> Lesson4
             this.repository = repository;
         }
 
@@ -35,32 +54,31 @@ namespace MetricsAgent.Controllers
             });
 
             return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]
         public IActionResult GetAll()
         {
-            var metrics = repository.GetAll();
-
+            var config = new MapperConfiguration(cfg => cfg.CreateMap<HddMetric, HddMetricDto>());
+            var m = config.CreateMapper();
+            IList<HddMetric> metrics = _repository.GetAll();
             var response = new HddMetricsResponse()
             {
                 Metrics = new List<HddMetricResponseDto>()
             };
-
             foreach (var metric in metrics)
             {
-                response.Metrics.Add(new HddMetricResponseDto { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                response.Metrics.Add(m.Map<HddMetricResponseDto>(metric));
             }
-
             return Ok(response);
         }
 
-        [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/dotnetmetrics/from/{fromTime}/to/{toTime}");
 
-            IList<HddMetric> metrics = repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
+            IList<HddMetric> metrics = _repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
             var response = new HddMetricsResponse()
             {
@@ -71,7 +89,7 @@ namespace MetricsAgent.Controllers
             {
                 foreach (var metric in metrics)
                 {
-                    response.Metrics.Add(new HddMetricResponseDto() { Time = metric.Time, Value = metric.Value, Id = metric.Id });
+                    response.Metrics.Add(_mapper.Map<HddMetricResponseDto>(metric));
                 }
             }
 

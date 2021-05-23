@@ -4,97 +4,39 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.Models;
 using System.Data.SQLite;
+using Dapper;
+using MetricsAgent.DAL.Interfaces;
 
 namespace MetricsAgent.DAL.Repository
 {
-    public interface IDotNetMetricsRepository : IRepository<DotNetMetric>
-    {
-    }
-
     public class DotNetMetricsRepository : IDotNetMetricsRepository
     {
-        private const string ConnectionString = "Data Source=metrics.db;Version=3;Pooling=true;Max Pool Size=100;";
+        private const string ConnectionString = @"Data Source=metrics.db; Version=3;Pooling=True;Max Pool Size=100;";
 
-        public void Create(DotNetMetric item)
+        public DotNetMetricsRepository()
         {
-            using var connection = new SQLiteConnection(ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "INSERT INTO cpumetrics(value, time) VALUES(@value, @time)";
-            cmd.Parameters.AddWithValue("@value", item.Value);
-            cmd.Parameters.AddWithValue("@time", item.Time.ToUniversalTime());
-            cmd.Prepare();
-            cmd.ExecuteNonQuery();
+            SqlMapper.AddTypeHandler(new TimeSpanHandler());
         }
 
         public IList<DotNetMetric> GetAll()
         {
-            using var connection = new SQLiteConnection(ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics";
-            var returnList = new List<DotNetMetric>();
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
-                while (reader.Read())
-                {
-                    returnList.Add(new DotNetMetric()
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
-                    });
-                }
+                return connection.Query<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics").ToList();
             }
-            return returnList;
         }
 
-        public DotNetMetric GetById(int id)
-        {
-            using var connection = new SQLiteConnection(ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM cpumetrics WHERE id=@id";
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    return new DotNetMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
-                    };
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
         public IList<DotNetMetric> GetFromTimeToTime(long fromTime, long toTime)
         {
-            using var connection = new SQLiteConnection(DataBaseConnectionSettings.ConnectionString);
-            connection.Open();
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)";
-            cmd.Parameters.AddWithValue("@fromTime", fromTime);
-            cmd.Parameters.AddWithValue("@toTime", toTime);
-            cmd.Prepare();
-            var returnList = new List<DotNetMetric>();
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            using (var connection = new SQLiteConnection(ConnectionString))
             {
-                while (reader.Read())
-                {
-                    returnList.Add(new DotNetMetric()
+                return connection.Query<DotNetMetric>("SELECT Id, Time, Value FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    new
                     {
-                        Id = reader.GetInt32(0),
-                        Value = reader.GetInt32(1),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(2)).ToUniversalTime()
-                    });
-                }
+                        fromTime = fromTime,
+                        toTime = toTime,
+                    }).ToList();
             }
-            return returnList;
         }
     }
 }

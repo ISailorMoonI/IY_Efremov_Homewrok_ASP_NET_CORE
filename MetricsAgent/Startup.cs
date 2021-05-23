@@ -12,6 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.DAL;
 using System.Data.SQLite;
+using AutoMapper;
+using MetricsAgent.Controllers;
+using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 
 namespace MetricsAgent
@@ -35,6 +38,9 @@ namespace MetricsAgent
             services.AddScoped<IHddMetricsRepository, HddMetricsRepository>();
             services.AddScoped<INetworkMetricsRepository, NetworkMetricsRepository>();
             services.AddScoped<IRamMetricsRepository, RamMetricsRepository>();
+            var mapperConfiguration = new MapperConfiguration(mp => mp.AddProfile(new MapperProfile()));
+            var mapper = mapperConfiguration.CreateMapper();
+            services.AddSingleton(mapper);
         }
 
         private void ConfigureSqlLiteConnection(IServiceCollection services)
@@ -87,8 +93,6 @@ namespace MetricsAgent
                 }
             }
         }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())

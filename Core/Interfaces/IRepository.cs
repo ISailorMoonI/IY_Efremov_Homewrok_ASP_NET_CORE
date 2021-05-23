@@ -10,10 +10,5 @@ namespace MetricsAgent.DAL.Repository
         IList<T> GetFromTimeToTime(long fromTime, long toTime);
 
         IList<T> GetAll();
-
-        T GetById(int id);
-
-        void Create(T item);
-
     }
 }
