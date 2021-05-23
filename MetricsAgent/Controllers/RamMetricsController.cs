@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using MetricsAgent.DAL.DTO;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
@@ -16,7 +15,6 @@ namespace MetricsAgent.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     public class RamMetricsController : ControllerBase
     {
         private readonly ILogger<RamMetricsController> _logger;
@@ -58,23 +56,7 @@ namespace MetricsAgent.Controllers
 >>>>>>> master
         }
 
-        [HttpGet("all")]
-        public IActionResult GetAll()
-        {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<RamMetric, RamMetricDto>());
-                var m = config.CreateMapper();
-                IList<RamMetric> metrics = _repository.GetAll();
-                var response = new RamMetricsResponse()
-                {
-                    Metrics = new List<RamMetricResponseDto>()
-                };
-                foreach (var metric in metrics)
-                {
-                    response.Metrics.Add(m.Map<RamMetricResponseDto>(metric));
-                }
-                return Ok(response);
-        }
-
+        [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/dotnetmetrics/from/{fromTime}/to/{toTime}");

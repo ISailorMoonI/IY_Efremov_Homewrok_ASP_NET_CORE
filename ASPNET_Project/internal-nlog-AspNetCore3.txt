@@ -26,6 +26,7 @@
 2021-05-10 06:43:24.1943 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
 2021-05-10 06:43:24.1943 Info Adding target ConsoleTarget(Name=lifetimeConsole)
 2021-05-10 06:43:24.2478 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=65, FilePath=C:\Users\User\source\repos\homeworkASPNET\ASPNET_Project\bin\Debug\netcoreapp3.1\NLog.config
+<<<<<<< HEAD
 2021-05-10 07:01:34.4104 Info Message Template Auto Format enabled
 2021-05-10 07:01:34.4308 Info Loading assembly: NLog.Web.AspNetCore
 2021-05-10 07:01:34.5130 Info Adding target FileTarget(Name=allfile)
@@ -54,3 +55,15 @@
 2021-05-10 07:06:06.3134 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
 2021-05-10 07:06:06.3185 Info Adding target ConsoleTarget(Name=lifetimeConsole)
 2021-05-10 07:06:06.3658 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=65, FilePath=C:\Users\User\source\repos\homeworkASPNET\ASPNET_Project\bin\Debug\netcoreapp3.1\NLog.config
+=======
+2021-05-21 04:21:03.2527 Info Message Template Auto Format enabled
+2021-05-21 04:21:03.2759 Info Loading assembly: NLog.Web.AspNetCore
+2021-05-21 04:21:03.3916 Info Adding target FileTarget(Name=allfile)
+2021-05-21 04:21:03.4092 Info Adding target FileTarget(Name=ownFile-web)
+2021-05-21 04:21:03.4092 Warn Skipping unrecognized property 'tolower=true` for ${level} (NLog.LayoutRenderers.LevelLayoutRenderer)
+2021-05-21 04:21:03.4221 Info Adding target ConsoleTarget(Name=lifetimeConsole)
+2021-05-21 04:21:03.4992 Info Validating config: TargetNames=allfile, lifetimeConsole, ownFile-web, ConfigItems=65, FilePath=C:\Users\User\source\repos\homeworkASPNET\ASPNET_Project\bin\Debug\netcoreapp3.1\NLog.config
+2021-05-21 04:21:34.8198 Info Shutdown() called. Logger closing...
+2021-05-21 04:21:34.8198 Info Closing old configuration.
+2021-05-21 04:21:34.8482 Info Logger has been closed down.
+>>>>>>> Lesson5

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using MetricsAgent.DAL.DTO;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
 using MetricsAgent.DAL.Requests;
@@ -55,26 +54,10 @@ namespace MetricsAgent.Controllers
 >>>>>>> master
         }
 
-        [HttpGet("all")]
-        public IActionResult GetAll()
-        {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<NetworkMetric, NetworkMetricDto>());
-            var m = config.CreateMapper();
-            IList<NetworkMetric> metrics = _repository.GetAll();
-            var response = new NetworkMetricsResponse()
-            {
-                Metrics = new List<NetworkMetricResponseDto>()
-            };
-            foreach (var metric in metrics)
-            {
-                response.Metrics.Add(m.Map<NetworkMetricResponseDto>(metric));
-            }
-            return Ok(response);
-        }
-
+        [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/Networkmetrics/from/{fromTime}/to/{toTime}");
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/networkmetrics/from/{fromTime}/to/{toTime}");
 
             IList<NetworkMetric> metrics = _repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
@@ -90,7 +73,6 @@ namespace MetricsAgent.Controllers
                     response.Metrics.Add(_mapper.Map<NetworkMetricResponseDto>(metric));
                 }
             }
-
             return Ok(response);
         }
     }
