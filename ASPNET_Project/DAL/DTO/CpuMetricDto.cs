@@ -12,3 +12,4 @@ namespace MetricsManager.DAL.DTO
     public long Time { get; set; }
     }
 }
+////
