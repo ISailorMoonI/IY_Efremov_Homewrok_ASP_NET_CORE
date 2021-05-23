@@ -19,15 +19,35 @@ namespace MetricsAgent.Controllers
     public class HddMetricsController : ControllerBase
     {
         private readonly ILogger<HddMetricsController> _logger;
+<<<<<<< HEAD
         private IHddMetricsRepository _repository;
         private readonly IMapper _mapper;
+=======
+        private IHddMetricsRepository repository;
+>>>>>>> master
 
         public HddMetricsController(ILogger<HddMetricsController> logger, IHddMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в HddMetricsController");
+<<<<<<< HEAD
             _repository = repository;
             _mapper = mapper;
+=======
+            this.repository = repository;
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] HddMetricCreateRequest request)
+        {
+            repository.Create(new HddMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]

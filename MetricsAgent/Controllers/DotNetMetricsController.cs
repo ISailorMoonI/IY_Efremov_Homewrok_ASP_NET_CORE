@@ -22,15 +22,35 @@ namespace MetricsAgent.Controllers
     public class DotNetMetricsController : ControllerBase
     {
         private readonly ILogger<DotNetMetricsController> _logger;
+<<<<<<< HEAD
         private IDotNetMetricsRepository _repository;
         private readonly IMapper _mapper;
+=======
+        private IDotNetMetricsRepository repository;
+>>>>>>> master
 
         public DotNetMetricsController(ILogger<DotNetMetricsController> logger, IDotNetMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
+<<<<<<< HEAD
             _repository = repository;
             _mapper = mapper;
+=======
+            this.repository = repository;
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] DotNetMetricCreateRequest request)
+        {
+            repository.Create(new DotNetMetric()
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]

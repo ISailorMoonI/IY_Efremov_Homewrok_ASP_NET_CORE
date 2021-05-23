@@ -11,7 +11,11 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
+<<<<<<< HEAD
       "launchUrl": "api/metrics/cpu",
+=======
+      "launchUrl": "api/cpu/create",
+>>>>>>> master
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

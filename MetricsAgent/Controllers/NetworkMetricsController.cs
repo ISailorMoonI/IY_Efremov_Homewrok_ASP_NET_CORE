@@ -19,15 +19,36 @@ namespace MetricsAgent.Controllers
     public class NetworkMetricsController : ControllerBase
     {
         private readonly ILogger<NetworkMetricsController> _logger;
+<<<<<<< HEAD
         private INetworkMetricsRepository _repository;
         private readonly IMapper _mapper;
+=======
+        private INetworkMetricsRepository repository;
+>>>>>>> master
 
         public NetworkMetricsController(ILogger<NetworkMetricsController> logger, INetworkMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в NetworkMetricsController");
+<<<<<<< HEAD
             _repository = repository;
             _mapper = mapper;
+=======
+            this.repository = repository;
+        }
+
+
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] NetworkMetricCreateRequest request)
+        {
+            repository.Create(new NetworkMetric
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]

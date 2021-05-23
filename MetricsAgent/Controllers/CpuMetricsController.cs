@@ -21,15 +21,36 @@ namespace MetricsAgent.Controllers
     public class CpuMetricsController : ControllerBase
     {
         private readonly ILogger<CpuMetricsController> _logger;
+<<<<<<< HEAD
         private ICpuMetricsRepository _repository;
         private readonly IMapper _mapper;
+=======
+        private ICpuMetricsRepository repository;
+>>>>>>> master
 
         public CpuMetricsController(ILogger<CpuMetricsController> logger, ICpuMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
+<<<<<<< HEAD
             _logger.LogDebug(1, "NLog встроен в CpuMetricsController");
             _repository = repository;
             _mapper = mapper;
+=======
+            _logger.LogDebug(1, "NLog встроен в DotNetMetricsController");
+            this.repository = repository;
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] CpuMetricCreateRequest request)
+        {
+            repository.Create(new CpuMetric()
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]

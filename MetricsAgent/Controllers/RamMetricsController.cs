@@ -20,15 +20,35 @@ namespace MetricsAgent.Controllers
     public class RamMetricsController : ControllerBase
     {
         private readonly ILogger<RamMetricsController> _logger;
+<<<<<<< HEAD
         private IRamMetricsRepository _repository;
         private readonly IMapper _mapper;
+=======
+        private IRamMetricsRepository repository;
+>>>>>>> master
 
         public RamMetricsController(ILogger<RamMetricsController> logger, IRamMetricsRepository repository, IMapper mapper)
         {
             _logger = logger;
             _logger.LogDebug(1, "NLog встроен в RamMetricsController");
+<<<<<<< HEAD
             _repository = repository;
             _mapper = mapper;
+=======
+            this.repository = repository;
+        }
+
+        [HttpPost("create")]
+        public IActionResult Create([FromBody] RamMetricCreateRequest request)
+        {
+            repository.Create(new RamMetric()
+            {
+                Time = request.Time,
+                Value = request.Value
+            });
+
+            return Ok();
+>>>>>>> master
         }
 
         [HttpGet("all")]
