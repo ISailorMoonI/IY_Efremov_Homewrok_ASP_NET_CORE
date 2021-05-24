@@ -32,16 +32,17 @@ namespace MetricsAgent
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            
+
         Host.CreateDefaultBuilder(args).ConfigureWebHostDefaults(webBuilder =>
-        {
-            webBuilder.UseStartup<Startup>();
-        })
-        .ConfigureLogging(logging =>
-        {
-            logging.ClearProviders();
-            logging.SetMinimumLevel(LogLevel.Trace); 
-        }).UseNLog(); 
+            {
+                webBuilder.UseStartup<Startup>();
+                webBuilder.UseUrls("http://localhost:5000");
+            })
+            .ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.SetMinimumLevel(LogLevel.Trace); 
+            }).UseNLog();
 
     }
 }

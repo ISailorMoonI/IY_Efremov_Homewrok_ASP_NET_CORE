@@ -40,6 +40,7 @@ namespace MetricsAgent
 
             services.AddControllers();
             services.AddSingleton(mapper);
+            services.AddHttpClient();
 
             services.AddFluentMigratorCore().ConfigureRunner(rb => rb
                 .AddSQLite()

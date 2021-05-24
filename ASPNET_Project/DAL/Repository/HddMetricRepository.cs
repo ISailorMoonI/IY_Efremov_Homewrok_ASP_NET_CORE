@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
+using MetricsManager.DAL.Interfaces;
 using MetricsManager.Models;
 
 namespace MetricsManager.DAL.Repository
 {
-    public interface IHddMetricsRepository : IRepository<HddMetric>
-    {
-    }
+    
 
     public class HddMetricsRepository : IHddMetricsRepository
     {

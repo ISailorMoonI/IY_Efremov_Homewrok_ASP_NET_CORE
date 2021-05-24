@@ -12,9 +12,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsManager.DAL;
 using System.Data.SQLite;
-using ASPNET_Project.Models;
 using AutoMapper;
 using MetricsManager.Controllers;
+using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Repository;
 
 namespace MetricsManager

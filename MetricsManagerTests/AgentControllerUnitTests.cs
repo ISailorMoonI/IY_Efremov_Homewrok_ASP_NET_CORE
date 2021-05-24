@@ -6,20 +6,20 @@ using System.Collections.Generic;
 using Xunit;
 using Microsoft.Extensions.Logging;
 using Moq;
-using ASPNET_Project.Models;
 using MetricsManager.DAL;
+using MetricsManager.DAL.DTO;
 
 namespace MetricsManagerTests
 {
     public class AgentControllerUnitTests
     {
         private AgentsController controller;
-        private List<AgentInfo> _registeredAgents = new List<AgentInfo>();
+        private List<Agent> _registeredAgents = new List<Agent>();
         private Mock<ILogger<AgentsController>> logger;
 
         public AgentControllerUnitTests()
         {
-            _registeredAgents.Add(new AgentInfo());
+            _registeredAgents.Add(new Agent());
             logger = new Mock<ILogger<AgentsController>>();
             controller = new AgentsController(_registeredAgents, logger.Object);
         }

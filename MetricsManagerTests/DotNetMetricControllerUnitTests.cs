@@ -7,6 +7,7 @@ using Moq;
 using System.Collections.Generic;
 using AutoMapper;
 using MetricsManager.DAL;
+using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Repository;
 
 namespace MetricsManagerTests

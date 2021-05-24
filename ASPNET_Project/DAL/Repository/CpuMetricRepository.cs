@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
+using MetricsManager.DAL.Interfaces;
 using MetricsManager.Models;
 
 
 namespace MetricsManager.DAL.Repository
 {
-    public interface ICpuMetricsRepository : IRepository<CpuMetric> { }
+   
 
     public class CpuMetricsRepository : ICpuMetricsRepository
     {

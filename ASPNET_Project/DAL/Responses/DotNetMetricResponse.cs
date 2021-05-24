@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace MetricsManager.DAL.Responses
 {
-    public class DotNetMetricResponse
+    public class DotNetMetricsResponse
     {
         public List<DotNetMetricResponseDto> Metrics { get; set; }
     }

@@ -7,6 +7,6 @@ namespace MetricsAgent.DAL.Repository
 {
     public class DataBaseConnectionSettings
         {
-            public const string ConnectionString = "Data Source=metricsManager.db;Version=3;Pooling=true;Max Pool Size=100;";
+            public const string ConnectionString = "Data Source=metricsagent.db;Version=3;Pooling=true;Max Pool Size=100;";
         }
 }
