@@ -23,7 +23,7 @@ namespace MetricsManager.DAL.Repository
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var response = connection.QuerySingle<string>("SELECT AgentAddress FROM agents WHERE AgentId=@agent_id",
                         new
@@ -45,7 +45,7 @@ namespace MetricsManager.DAL.Repository
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     return connection.Query<Agent>("SELECT AgentId, AgentAddress FROM agents", null).ToList();
                 }
@@ -61,7 +61,7 @@ namespace MetricsManager.DAL.Repository
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     connection.Execute("INSERT INTO agents(AgentAddress) VALUES(@AgentAddress)",
                         new
@@ -80,7 +80,7 @@ namespace MetricsManager.DAL.Repository
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     connection.Execute($"DELETE FROM agents WHERE (AgentAddress=@AgentAddress)",
                         new

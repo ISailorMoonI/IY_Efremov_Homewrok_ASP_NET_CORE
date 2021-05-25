@@ -3,75 +3,118 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Threading.Tasks;
+using Dapper;
 using MetricsManager.DAL.Interfaces;
 using MetricsManager.Models;
+using Microsoft.Extensions.Logging;
 
 namespace MetricsManager.DAL.Repository
 {
-    
-
     public class DotNetMetricsRepository : IDotNetMetricsRepository
     {
-        public IList<DotNetMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
+        private readonly ILogger<DotNetMetricsRepository> _logger;
+        public DotNetMetricsRepository(ILogger<DotNetMetricsRepository> logger)
         {
-            using var connection = new SQLiteConnection(DataBaseConnection.DataBaseConnectionSettings.ConnectionString);
-            connection.Open();
+            _logger = logger;
+            SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
+        }
 
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM dotnetmetrics WHERE (agent_id=@agentId) and ((time>=@fromTime) AND (time<=@toTime))";
-
-            cmd.Parameters.AddWithValue("@agentId", agentId);
-            cmd.Parameters.AddWithValue("@fromTime", fromTime);
-            cmd.Parameters.AddWithValue("@toTime", toTime);
-            cmd.Prepare();
-
-            var returnList = new List<DotNetMetric>();
-
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+        public void Create(DotNetMetric singleMetric)
+        {
+            try
             {
-                while (reader.Read())
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    returnList.Add(new DotNetMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        AgentId = reader.GetInt32(1),
-                        Value = reader.GetInt32(2),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(3)).ToUniversalTime()
-                    });
+                    var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
+                    connection.Execute("INSERT INTO dotnetmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                        new
+                        {
+                            agent_id = singleMetric.AgentId,
+                            value = singleMetric.Value,
+                            time = timeInseconds
+                        });
+
+                    var getALL = connection.Query<DotNetMetric>("SELECT * FROM dotnetmetrics", null).ToList();
                 }
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+        }
 
-            return returnList;
+        public DateTimeOffset GetLastTimeFromAgent(int agent_id)
+        {
+            DateTimeOffset lastTime;
+
+            try
+            {
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                {
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM dotnetmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                        new
+                        {
+                            agent_id = agent_id
+                        });
+
+                    if (timeFromAgent.Year == 1)
+                        lastTime = DateTimeOffset.UnixEpoch;
+                    else
+                    {
+                        lastTime = timeFromAgent;
+                    }
+
+                    return lastTime;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            return DateTimeOffset.UtcNow;
+        }
+
+        public IList<DotNetMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
+        {
+            try
+            {
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                {
+                    return connection.Query<DotNetMetric>("SELECT Id, AgentId, Value, Time FROM dotnetmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                        new
+                        {
+                            fromTime = fromTime,
+                            toTime = toTime,
+                            agentId = agentId
+                        }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            return null;
         }
 
         public IList<DotNetMetric> GetMetricsFromAllClusterTimeToTime(long fromTime, long toTime)
         {
-            using var connection = new SQLiteConnection(DataBaseConnection.DataBaseConnectionSettings.ConnectionString);
-            connection.Open();
-
-            using var cmd = new SQLiteCommand(connection);
-            cmd.CommandText = "SELECT * FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)";
-
-            cmd.Parameters.AddWithValue("@fromTime", fromTime);
-            cmd.Parameters.AddWithValue("@toTime", toTime);
-            cmd.Prepare();
-
-            var returnList = new List<DotNetMetric>();
-
-            using (SQLiteDataReader reader = cmd.ExecuteReader())
+            try
             {
-                while (reader.Read())
+                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    returnList.Add(new DotNetMetric
-                    {
-                        Id = reader.GetInt32(0),
-                        AgentId = reader.GetInt32(1),
-                        Value = reader.GetInt32(2),
-                        Time = DateTimeOffset.FromUnixTimeSeconds(reader.GetInt64(3)).ToUniversalTime()
-                    });
+                    return connection.Query<DotNetMetric>("SELECT * FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                        new
+                        {
+                            fromTime = fromTime,
+                            toTime = toTime,
+                        }).ToList();
                 }
             }
-            return returnList;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+            return null;
         }
     }
 }
