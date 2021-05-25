@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MetricsManager.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CpuMetricsController : ControllerBase
     {
