@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Repository;
 using MetricsManager.DAL.Responses;
 using MetricsManager.Models;
@@ -41,7 +42,7 @@ namespace MetricsManager.Controllers
 
             IList<DotNetMetric> metrics = _repository.GetMetricsFromAgentIdTimeToTime(agentId, fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
-            var response = new DotNetMetricResponse()
+            var response = new DotNetMetricsResponse()
             {
                 Metrics = new List<DotNetMetricResponseDto>()
             };
@@ -62,7 +63,7 @@ namespace MetricsManager.Controllers
             _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/dotnetmetrics/cluster/from/{fromTime}/to/{toTime}");
             IList<DotNetMetric> metrics = _repository.GetMetricsFromAllClusterTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
-            var response = new DotNetMetricResponse()
+            var response = new DotNetMetricsResponse()
             {
                 Metrics = new List<DotNetMetricResponseDto>()
             };

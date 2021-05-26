@@ -1,22 +1,28 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using MetricsManager.DAL;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MetricsAgent.DAL;
 using System.Data.SQLite;
 using AutoMapper;
 using FluentMigrator.Runner;
-using Quartz.Spi;
-using Quartz;
-using Quartz.Impl;
 using MetricsManager.Client;
-using System;
 using MetricsManager.Client.MetricsManager.Client.MetricsManager.Client;
 using MetricsManager.Controllers;
 using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Jobs;
 using MetricsManager.DAL.Repository;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using Quartz;
+using Quartz.Impl;
+using Quartz.Spi;
 using Polly;
 
 
@@ -80,15 +86,15 @@ namespace MetricsManager
         {
             if (env.IsDevelopment())
             {
-                {
-                    endpoints.MapControllers();
-                })
-
-                ;
-
-                // çàïóñêàåì ìèãðàöèè
-                migrationRunner.MigrateUp();
+                app.UseDeveloperExceptionPage();
             }
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+            migrationRunner.MigrateUp();
         }
     }
 }
