@@ -26,7 +26,7 @@ namespace MetricsManager.DAL.Repository
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO dotnetmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO DotnetMetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -34,7 +34,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<DotNetMetric>("SELECT * FROM dotnetmetrics", null).ToList();
+                    var getALL = connection.Query<DotNetMetric>("SELECT * FROM DotnetMetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM dotnetmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM DotnetMetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -80,7 +80,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<DotNetMetric>("SELECT Id, AgentId, Value, Time FROM dotnetmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<DotNetMetric>("SELECT Id, AgentId, Value, Time FROM DotnetMetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -102,7 +102,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<DotNetMetric>("SELECT * FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<DotNetMetric>("SELECT * FROM DotnetMetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

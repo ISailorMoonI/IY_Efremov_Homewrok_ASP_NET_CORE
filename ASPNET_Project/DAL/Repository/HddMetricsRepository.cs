@@ -28,7 +28,7 @@ namespace MetricsManager.DAL.Repository
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO hddmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO HddMetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -36,7 +36,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<HddMetric>("SELECT * FROM hddmetrics", null).ToList();
+                    var getALL = connection.Query<HddMetric>("SELECT * FROM HddMetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -53,7 +53,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM hddmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM HddMetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -82,7 +82,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<HddMetric>("SELECT Id, AgentId, Value, Time FROM hddmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<HddMetric>("SELECT Id, AgentId, Value, Time FROM HddMetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -104,7 +104,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<HddMetric>("SELECT * FROM hddmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<HddMetric>("SELECT * FROM HddMetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

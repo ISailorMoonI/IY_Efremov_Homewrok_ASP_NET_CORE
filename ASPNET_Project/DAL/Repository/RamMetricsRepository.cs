@@ -26,7 +26,7 @@ namespace MetricsManager.DAL.Repository
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO rammetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO RamMetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -34,7 +34,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<RamMetric>("SELECT * FROM rammetrics", null).ToList();
+                    var getALL = connection.Query<RamMetric>("SELECT * FROM RamMetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM rammetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM RamMetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -80,7 +80,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<RamMetric>("SELECT Id, AgentId, Value, Time FROM rammetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<RamMetric>("SELECT Id, AgentId, Value, Time FROM RamMetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -102,7 +102,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<RamMetric>("SELECT * FROM rammetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<RamMetric>("SELECT * FROM RamMetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

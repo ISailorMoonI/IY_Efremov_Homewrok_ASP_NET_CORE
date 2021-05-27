@@ -26,7 +26,7 @@ namespace MetricsManager.DAL.Repository
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO cpumetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO CpuMetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -34,7 +34,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<CpuMetric>("SELECT * FROM cpumetrics", null).ToList();
+                    var getALL = connection.Query<CpuMetric>("SELECT * FROM CpuMetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -51,7 +51,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM cpumetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM CpuMetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -80,7 +80,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<CpuMetric>("SELECT Id, AgentId, Value, Time FROM cpumetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<CpuMetric>("SELECT Id, AgentId, Value, Time FROM CpuMetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -102,7 +102,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<CpuMetric>("SELECT * FROM CpuMetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

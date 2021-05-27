@@ -14,7 +14,6 @@ namespace MetricsManager.DAL.Repository
     {
         private readonly ILogger<NetworkMetricsRepository> _logger;
 
-        // добавляем парсинг для типа данных DateTimeOffset в возвращаемые значения
         public NetworkMetricsRepository(ILogger<NetworkMetricsRepository> logger)
         {
             _logger = logger;
@@ -28,7 +27,7 @@ namespace MetricsManager.DAL.Repository
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO networkmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO NetworkMetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -36,7 +35,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<NetworkMetric>("SELECT * FROM networkmetrics", null).ToList();
+                    var getALL = connection.Query<NetworkMetric>("SELECT * FROM NetworkMetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -52,7 +51,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM networkmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM NetworkMetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -81,7 +80,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<NetworkMetric>("SELECT Id, AgentId, Value, Time FROM networkmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<NetworkMetric>("SELECT Id, AgentId, Value, Time FROM NetworkMetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -103,7 +102,7 @@ namespace MetricsManager.DAL.Repository
             {
                 using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<NetworkMetric>("SELECT * FROM networkmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<NetworkMetric>("SELECT * FROM NetworkMetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

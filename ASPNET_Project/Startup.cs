@@ -52,8 +52,7 @@ namespace MetricsManager
                 (
                     rb => rb
                         .AddSQLite()
-                        .WithGlobalConnectionString(DataBaseManagerConnectionSettings
-                            .ConnectionString)
+                        .WithGlobalConnectionString(DataBaseManagerConnectionSettings.ConnectionString)
                         .ScanIn(typeof(Startup).Assembly).For.Migrations()
                 )
                 .AddLogging
@@ -84,6 +83,7 @@ namespace MetricsManager
             services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
                 .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
 
+            services.AddSwaggerGen();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
