@@ -19,7 +19,7 @@ namespace MetricsManager.DAL.Repository
             _logger = logger;
             SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
         }
-
+        //
         public void Create(CpuMetric singleMetric)
         {
             try
