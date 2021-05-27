@@ -8,7 +8,7 @@ using MetricsManager.DAL.DTO;
 using MetricsManager.DAL.Interfaces;
 
 namespace MetricsManager.DAL.Repository
-{
+{//
     public class AgentsRepository : IAgentsRepository
     {
         private readonly ILogger<AgentsRepository> _logger;
