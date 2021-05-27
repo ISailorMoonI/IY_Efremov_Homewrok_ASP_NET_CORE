@@ -25,8 +25,7 @@ namespace MetricsManager.Controllers
         [HttpPost("register")]
         public IActionResult RegisterAgent([FromBody] Agent agent)
         {
-            _logger.LogTrace(
-                $"{DateTime.Now.ToString("HH: mm:ss: fffffff")}: AgentsController/register: AgentAdress={agent.AgentAddress}");
+            _logger.LogTrace($"{DateTime.Now.ToString("HH: mm:ss: fffffff")}: AgentsController/register: AgentAdress={agent.AgentAddress}");
             _repository.RegisterAgent(agent);
             return Ok();
         }
@@ -40,7 +39,6 @@ namespace MetricsManager.Controllers
             return Ok();
         }
 
-        [HttpGet("getAgentsList")]
         public IActionResult GetAllAgentsList()
         {
             _logger.LogTrace($"{DateTime.Now.ToString("HH: mm:ss: fffffff")}: AgentsController/GetAllAgentsList");

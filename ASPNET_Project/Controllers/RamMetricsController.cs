@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Repository;
 using MetricsManager.DAL.Responses;
 using MetricsManager.Models;
