@@ -10,25 +10,23 @@ using Microsoft.Extensions.Logging;
 
 namespace MetricsManager.DAL.Repository
 {
-    
-
-    public class HddMetricsRepository : IHddMetricsRepository
+    public class RamMetricsRepository : IRamMetricsRepository
     {
-        private readonly ILogger<HddMetricsRepository> _logger;
-        public HddMetricsRepository(ILogger<HddMetricsRepository> logger)
+        private readonly ILogger<RamMetricsRepository> _logger;
+        public RamMetricsRepository(ILogger<RamMetricsRepository> logger)
         {
             _logger = logger;
             SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
         }
 
-        public void Create(HddMetric singleMetric)
+        public void Create(RamMetric singleMetric)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO hddmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO rammetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -36,7 +34,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<HddMetric>("SELECT * FROM hddmetrics", null).ToList();
+                    var getALL = connection.Query<RamMetric>("SELECT * FROM rammetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -51,9 +49,9 @@ namespace MetricsManager.DAL.Repository
 
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM hddmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM rammetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -76,13 +74,13 @@ namespace MetricsManager.DAL.Repository
             return DateTimeOffset.UtcNow;
         }
 
-        public IList<HddMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
+        public IList<RamMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<HddMetric>("SELECT Id, AgentId, Value, Time FROM hddmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<RamMetric>("SELECT Id, AgentId, Value, Time FROM rammetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -98,13 +96,13 @@ namespace MetricsManager.DAL.Repository
             return null;
         }
 
-        public IList<HddMetric> GetMetricsFromAllClusterTimeToTime(long fromTime, long toTime)
+        public IList<RamMetric> GetMetricsFromAllClusterTimeToTime(long fromTime, long toTime)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<HddMetric>("SELECT * FROM hddmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<RamMetric>("SELECT * FROM rammetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

@@ -9,6 +9,7 @@ using MetricsManager.Controllers;
 using MetricsManager.DAL;
 using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Repository;
+using MetricsManager.Models;
 
 namespace MetricsManagerTests
 {
@@ -32,8 +33,9 @@ namespace MetricsManagerTests
             var agentId = 1;
             var fromTime = DateTimeOffset.FromUnixTimeSeconds(10);
             var toTime = DateTimeOffset.FromUnixTimeSeconds(100);
-            var result = controller.GetMetricsFromAgentIdTimeToTime(agentId, fromTime, toTime);
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            mock.Setup(a => a.GetMetricsFromAgentIdTimeToTime(agentId, 10, 100)).Returns(new List<CpuMetric>()).Verifiable();
+            mock.Verify(repository => repository.GetMetricsFromAgentIdTimeToTime(1, 10, 100), Times.AtMostOnce());
+            _logger.Verify();
         }
 
         [Fact]
@@ -41,8 +43,9 @@ namespace MetricsManagerTests
         {
             var fromTime = DateTimeOffset.FromUnixTimeSeconds(10);
             var toTime = DateTimeOffset.FromUnixTimeSeconds(100);
-            var result = controller.GetMetricsFromAllClusterTimeToTime(fromTime, toTime);
-            _ = Assert.IsAssignableFrom<IActionResult>(result);
+            mock.Setup(a => a.GetMetricsFromAllClusterTimeToTime(10, 100)).Returns(new List<CpuMetric>()).Verifiable();
+            mock.Verify(repository => repository.GetMetricsFromAgentIdTimeToTime(1, 10, 100), Times.AtMostOnce());
+            _logger.Verify();
         }
     }
 }

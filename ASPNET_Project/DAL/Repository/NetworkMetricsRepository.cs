@@ -10,23 +10,25 @@ using Microsoft.Extensions.Logging;
 
 namespace MetricsManager.DAL.Repository
 {
-    public class RamMetricsRepository : IRamMetricsRepository
+    public class NetworkMetricsRepository : INetworkMetricsRepository
     {
-        private readonly ILogger<RamMetricsRepository> _logger;
-        public RamMetricsRepository(ILogger<RamMetricsRepository> logger)
+        private readonly ILogger<NetworkMetricsRepository> _logger;
+
+        // добавляем парсинг для типа данных DateTimeOffset в возвращаемые значения
+        public NetworkMetricsRepository(ILogger<NetworkMetricsRepository> logger)
         {
             _logger = logger;
             SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
         }
 
-        public void Create(RamMetric singleMetric)
+        public void Create(NetworkMetric singleMetric)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO rammetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO networkmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -34,7 +36,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<RamMetric>("SELECT * FROM rammetrics", null).ToList();
+                    var getALL = connection.Query<NetworkMetric>("SELECT * FROM networkmetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -46,12 +48,11 @@ namespace MetricsManager.DAL.Repository
         public DateTimeOffset GetLastTimeFromAgent(int agent_id)
         {
             DateTimeOffset lastTime;
-
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM rammetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM networkmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -74,13 +75,13 @@ namespace MetricsManager.DAL.Repository
             return DateTimeOffset.UtcNow;
         }
 
-        public IList<RamMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
+        public IList<NetworkMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<RamMetric>("SELECT Id, AgentId, Value, Time FROM rammetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<NetworkMetric>("SELECT Id, AgentId, Value, Time FROM networkmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -96,13 +97,13 @@ namespace MetricsManager.DAL.Repository
             return null;
         }
 
-        public IList<RamMetric> GetMetricsFromAllClusterTimeToTime(long fromTime, long toTime)
+        public IList<NetworkMetric> GetMetricsFromAllClusterTimeToTime(long fromTime, long toTime)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<RamMetric>("SELECT * FROM rammetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<NetworkMetric>("SELECT * FROM networkmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

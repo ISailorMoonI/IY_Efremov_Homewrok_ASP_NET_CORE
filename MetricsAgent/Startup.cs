@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.DAL;
 using System.Data.SQLite;
+using System.IO;
+using System.Reflection;
 using AutoMapper;
 using FluentMigrator.Runner;
 using MetricsAgent.Controllers;
@@ -19,9 +21,16 @@ using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Jobs;
 using MetricsAgent.DAL.Jobs.JobsSchedule;
 using MetricsAgent.DAL.Repository;
+using MetricsManager.DAL.Repository;
+using Microsoft.OpenApi.Models;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
+using CpuMetricsRepository = MetricsAgent.DAL.Repository.CpuMetricsRepository;
+using DotNetMetricsRepository = MetricsAgent.DAL.Repository.DotNetMetricsRepository;
+using HddMetricsRepository = MetricsAgent.DAL.Repository.HddMetricsRepository;
+using NetworkMetricsRepository = MetricsAgent.DAL.Repository.NetworkMetricsRepository;
+using RamMetricsRepository = MetricsAgent.DAL.Repository.RamMetricsRepository;
 
 namespace MetricsAgent
 {
@@ -71,6 +80,29 @@ namespace MetricsAgent
             services.AddSingleton(new JobSchedule(jobType: typeof(RamMetricJob), cronExpression: "0/5 * * * * ?"));
 
             services.AddHostedService<QuartzHostedService>();
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "API metric manager service",
+                    Description = "metrics",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Bubaleh",
+                        Email = "yashamaru99@gmail.com",
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "open source",
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
@@ -79,6 +111,14 @@ namespace MetricsAgent
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса агента сбора метрик");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseRouting();
 

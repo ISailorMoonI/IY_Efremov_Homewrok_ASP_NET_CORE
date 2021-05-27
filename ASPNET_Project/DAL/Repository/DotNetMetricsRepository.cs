@@ -23,7 +23,7 @@ namespace MetricsManager.DAL.Repository
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
                     connection.Execute("INSERT INTO dotnetmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
@@ -49,7 +49,7 @@ namespace MetricsManager.DAL.Repository
 
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM dotnetmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
@@ -78,7 +78,7 @@ namespace MetricsManager.DAL.Repository
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     return connection.Query<DotNetMetric>("SELECT Id, AgentId, Value, Time FROM dotnetmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
@@ -100,7 +100,7 @@ namespace MetricsManager.DAL.Repository
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     return connection.Query<DotNetMetric>("SELECT * FROM dotnetmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new

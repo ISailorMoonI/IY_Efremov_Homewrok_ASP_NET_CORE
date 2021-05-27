@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using MetricsAgent.DAL.Interfaces;
 using MetricsAgent.DAL.Repository;
-using MetricsAgent.DAL.Requests;
 using MetricsAgent.DAL.Responses;
 using MetricsAgent.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -33,7 +32,7 @@ namespace MetricsAgent.Controllers
         [HttpGet("from/{fromTime}/to/{toTime}")]
         public IActionResult GetFromTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/dotnetmetrics/from/{fromTime}/to/{toTime}");
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsAgent/api/RamMetrics/from/{fromTime}/to/{toTime}");
 
             IList<RamMetric> metrics = _repository.GetFromTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
@@ -42,15 +41,11 @@ namespace MetricsAgent.Controllers
                 Metrics = new List<RamMetricResponseDto>()
             };
 
-            if (metrics != null)
-            {
                 foreach (var metric in metrics)
                 {
                     response.Metrics.Add(_mapper.Map<RamMetricResponseDto>(metric));
                 }
-            }
-
-            return Ok(response);
+                return Ok(response);
         }
     }
 }

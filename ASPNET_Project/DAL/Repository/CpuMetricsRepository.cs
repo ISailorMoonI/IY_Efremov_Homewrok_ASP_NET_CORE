@@ -8,27 +8,25 @@ using MetricsManager.DAL.Interfaces;
 using MetricsManager.Models;
 using Microsoft.Extensions.Logging;
 
+
 namespace MetricsManager.DAL.Repository
 {
-    public class NetworkMetricsRepository : INetworkMetricsRepository
+    public class CpuMetricsRepository : ICpuMetricsRepository
     {
-        private readonly ILogger<NetworkMetricsRepository> _logger;
-
-        // добавляем парсинг для типа данных DateTimeOffset в возвращаемые значения
-        public NetworkMetricsRepository(ILogger<NetworkMetricsRepository> logger)
+        private readonly ILogger<CpuMetricsRepository> _logger;
+        public CpuMetricsRepository(ILogger<CpuMetricsRepository> logger)
         {
             _logger = logger;
             SqlMapper.AddTypeHandler(new DapperDateTimeOffsetHandler());
         }
-
-        public void Create(NetworkMetric singleMetric)
+        public void Create(CpuMetric singleMetric)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
                     var timeInseconds = singleMetric.Time.ToUniversalTime().ToUnixTimeSeconds();
-                    connection.Execute("INSERT INTO networkmetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
+                    connection.Execute("INSERT INTO cpumetrics(AgentId, value, time) VALUES(@agent_id, @value, @time)",
                         new
                         {
                             agent_id = singleMetric.AgentId,
@@ -36,7 +34,7 @@ namespace MetricsManager.DAL.Repository
                             time = timeInseconds
                         });
 
-                    var getALL = connection.Query<NetworkMetric>("SELECT * FROM networkmetrics", null).ToList();
+                    var getALL = connection.Query<CpuMetric>("SELECT * FROM cpumetrics", null).ToList();
                 }
             }
             catch (Exception ex)
@@ -48,11 +46,12 @@ namespace MetricsManager.DAL.Repository
         public DateTimeOffset GetLastTimeFromAgent(int agent_id)
         {
             DateTimeOffset lastTime;
+
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM networkmetrics WHERE AgentId=@agent_id ORDER BY id DESC",
+                    var timeFromAgent = connection.QueryFirstOrDefault<DateTimeOffset>("SELECT time FROM cpumetrics WHERE AgentId=@agent_id ORDER BY id DESC",
                         new
                         {
                             agent_id = agent_id
@@ -75,13 +74,13 @@ namespace MetricsManager.DAL.Repository
             return DateTimeOffset.UtcNow;
         }
 
-        public IList<NetworkMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
+        public IList<CpuMetric> GetMetricsFromAgentIdTimeToTime(int agentId, long fromTime, long toTime)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<NetworkMetric>("SELECT Id, AgentId, Value, Time FROM networkmetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
+                    return connection.Query<CpuMetric>("SELECT Id, AgentId, Value, Time FROM cpumetrics WHERE (AgentId=@agentId) and ((time>=@fromTime) AND (time<=@toTime))",
                         new
                         {
                             fromTime = fromTime,
@@ -97,13 +96,13 @@ namespace MetricsManager.DAL.Repository
             return null;
         }
 
-        public IList<NetworkMetric> GetMetricsFromAllClusterTimeToTime(long fromTime, long toTime)
+        public IList<CpuMetric> GetMetricsFromAllClusterTimeToTime(long fromTime, long toTime)
         {
             try
             {
-                using (var connection = new SQLiteConnection(DataBaseConnection.DataBaseManagerConnectionSettings.ConnectionString))
+                using (var connection = new SQLiteConnection(DataBaseManagerConnectionSettings.ConnectionString))
                 {
-                    return connection.Query<NetworkMetric>("SELECT * FROM networkmetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
+                    return connection.Query<CpuMetric>("SELECT * FROM cpumetrics WHERE (time>=@fromTime) AND (time<=@toTime)",
                         new
                         {
                             fromTime = fromTime,

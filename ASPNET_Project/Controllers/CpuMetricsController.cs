@@ -32,7 +32,7 @@ namespace MetricsManager.Controllers
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgentIdTimeToTime([FromRoute] int agentId, [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/cpumetrics/agent/{agentId}/from/{fromTime}/to/{toTime}");
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/CpuMetrics/agent/{agentId}/from/{fromTime}/to/{toTime}");
 
             IList<CpuMetric> metrics = _repository.GetMetricsFromAgentIdTimeToTime(agentId, fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
@@ -41,20 +41,17 @@ namespace MetricsManager.Controllers
                 Metrics = new List<CpuMetricResponseDto>()
             };
 
-            if (metrics != null)
-            {
                 foreach (var metric in metrics)
                 {
                     response.Metrics.Add(_mapper.Map<CpuMetricResponseDto>(metric));
                 }
-            }
-            return Ok(response);
+                return Ok(response);
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAllClusterTimeToTime([FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
-            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/cpumetrics/cluster/from/{fromTime}/to/{toTime}");
+            _logger.LogInformation($"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/CpuMetrics/cluster/from/{fromTime}/to/{toTime}");
             IList<CpuMetric> metrics = _repository.GetMetricsFromAllClusterTimeToTime(fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
 
             var response = new CpuMetricsResponse()
@@ -62,14 +59,11 @@ namespace MetricsManager.Controllers
                 Metrics = new List<CpuMetricResponseDto>()
             };
 
-            if (metrics != null)
-            {
                 foreach (var metric in metrics)
                 {
                     response.Metrics.Add(_mapper.Map<CpuMetricResponseDto>(metric));
                 }
-            }
-            return Ok(response);
+                return Ok(response);
         }
     }
     }

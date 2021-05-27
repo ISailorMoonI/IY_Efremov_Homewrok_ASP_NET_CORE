@@ -30,19 +30,11 @@ namespace MetricsManager.Controllers
         }
 
         [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
-        public IActionResult GetMetricsFromAgent([FromRoute] int agentId, [FromRoute] TimeSpan fromTime,
-            [FromRoute] TimeSpan toTime)
-        {
-            _logger.LogInformation("Привет! Это наше первое сообщение в лог");
-            return Ok();
-        }
-
-        [HttpGet("agent/{agentId}/from/{fromTime}/to/{toTime}")]
         public IActionResult GetMetricsFromAgentIdTimeToTime([FromRoute] int agentId,
             [FromRoute] DateTimeOffset fromTime, [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation(
-                $"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/rammetrics/agent/{agentId}/from/{fromTime}/to/{toTime}");
+                $"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/RamMetrics/agent/{agentId}/from/{fromTime}/to/{toTime}");
 
             IList<RamMetric> metrics = _repository.GetMetricsFromAgentIdTimeToTime(agentId,
                 fromTime.ToUnixTimeSeconds(), toTime.ToUnixTimeSeconds());
@@ -52,15 +44,12 @@ namespace MetricsManager.Controllers
                 Metrics = new List<RamMetricResponseDto>()
             };
 
-            if (metrics != null)
-            {
                 foreach (var metric in metrics)
                 {
                     response.Metrics.Add(_mapper.Map<RamMetricResponseDto>(metric));
                 }
-            }
 
-            return Ok(response);
+                return Ok(response);
         }
 
         [HttpGet("cluster/from/{fromTime}/to/{toTime}")]
@@ -68,7 +57,7 @@ namespace MetricsManager.Controllers
             [FromRoute] DateTimeOffset toTime)
         {
             _logger.LogInformation(
-                $"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/rammetrics/cluster/from/{fromTime}/to/{toTime}");
+                $"{DateTime.Now.ToString("HH:mm:ss:fffffff")}: MetricsManager/api/RamMetrics/cluster/from/{fromTime}/to/{toTime}");
             IList<RamMetric> metrics =
                 _repository.GetMetricsFromAllClusterTimeToTime(fromTime.ToUnixTimeSeconds(),
                     toTime.ToUnixTimeSeconds());
@@ -78,15 +67,11 @@ namespace MetricsManager.Controllers
                 Metrics = new List<RamMetricResponseDto>()
             };
 
-            if (metrics != null)
-            {
                 foreach (var metric in metrics)
                 {
                     response.Metrics.Add(_mapper.Map<RamMetricResponseDto>(metric));
                 }
-            }
-
-            return Ok(response);
+                return Ok(response);
         }
     }
 }

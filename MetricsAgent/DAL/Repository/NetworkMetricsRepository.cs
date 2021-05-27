@@ -9,11 +9,8 @@ using MetricsAgent.Models;
 
 namespace MetricsAgent.DAL.Repository
 {
-    
-
     public class NetworkMetricsRepository : INetworkMetricsRepository
     {
-        private const string ConnectionString = @"Data Source=metrics.db; Version=3;Pooling=True;Max Pool Size=100;";
 
         public NetworkMetricsRepository()
         {
@@ -48,4 +45,3 @@ namespace MetricsAgent.DAL.Repository
         }
     }
 }
-

@@ -12,6 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MetricsAgent.DAL;
 using System.Data.SQLite;
+using System.IO;
+using System.Reflection;
 using AutoMapper;
 using FluentMigrator.Runner;
 using MetricsManager.Client;
@@ -20,6 +22,7 @@ using MetricsManager.Controllers;
 using MetricsManager.DAL.Interfaces;
 using MetricsManager.DAL.Jobs;
 using MetricsManager.DAL.Repository;
+using Microsoft.OpenApi.Models;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
@@ -49,7 +52,7 @@ namespace MetricsManager
                 (
                     rb => rb
                         .AddSQLite()
-                        .WithGlobalConnectionString(DataBaseConnection.DataBaseManagerConnectionSettings
+                        .WithGlobalConnectionString(DataBaseManagerConnectionSettings
                             .ConnectionString)
                         .ScanIn(typeof(Startup).Assembly).For.Migrations()
                 )
@@ -80,7 +83,31 @@ namespace MetricsManager
 
             services.AddHttpClient<IMetricsAgentClient, MetricsAgentClient>()
                 .AddTransientHttpErrorPolicy(p => p.WaitAndRetryAsync(3, _ => TimeSpan.FromMilliseconds(1000)));
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "API metric manager service",
+                    Description = "metrics",
+                    TermsOfService = new Uri("https://example.com/terms"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Bubaleh",
+                        Email = "yashamaru99@gmail.com",
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "open source",
+                    }
+                });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+            });
         }
+
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IMigrationRunner migrationRunner)
         {
@@ -88,6 +115,14 @@ namespace MetricsManager
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "API сервиса агента сбора метрик");
+                c.RoutePrefix = string.Empty;
+            });
+
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
